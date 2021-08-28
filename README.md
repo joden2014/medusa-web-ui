@@ -36,56 +36,8 @@
 ```
 medusa-web-ui
 │
-├─annex SQL 脚本
 │
-├─src 公共模块
-│  │
-│  └─main 
-│      │
-│      ├─java 源码文件
-│      │   │
-│      │   ├─common 公共代码
-│      │   │   │
-│      │   │   ├─aop 切面逻辑
-│      │   │   │
-│      │   │   ├─cache 缓存服务
-│      │   │   │
-│      │   │   ├─configure 集成配置
-│      │   │   │
-│      │   │   ├─constant 静态常量
-│      │   │   │
-│      │   │   ├─context 核心服务
-│      │   │   │
-│      │   │   ├─quartz 定时任务
-│      │   │   │
-│      │   │   ├─secure 安全实现
-│      │   │   │
-│      │   │   ├─tools 工具包
-│      │   │   │
-│      │   │   └─web 核心封装
-│      │   │   
-│      │   ├─modules 业务代码
-│      │   │   │
-│      │   │   ├─job 定时任务
-│      │   │   │      │
-│      │   │   │      ├─domain 实体
-│      │   │   │      │
-│      │   │   │      ├─params 参数
-│      │   │   │      │
-│      │   │   │      ├─repository ORM 操作
-│      │   │   │      │
-│      │   │   │      ├─rest 接口
-│      │   │   │      │
-│      │   │   │      └─service 服务
-│      │   │   │        
-│      │   │   │
-│      │   │   └─sys 基础功能
-│      │   │   
-│      │   └─EntranceApplication 启动类
-│      │   
-│      └─resource 资源文件
-│  
-└─pom.xml  Maven 配置
+├─public 统一公共首页模块
 
 ```
 # ⚡ 快速启动
