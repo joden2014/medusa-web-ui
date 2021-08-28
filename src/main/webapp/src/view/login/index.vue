@@ -62,7 +62,7 @@
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { create } from "@/api/module/captcha";
+// import { create } from "@/api/module/captcha";
 import { notification } from "ant-design-vue";
 export default {
   setup() {
