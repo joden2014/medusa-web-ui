@@ -79,7 +79,7 @@ datasource.*
 
 👉后台文档：编写中
 
-👉接口文档：[查看](http://localhost:5001/digital/swagger-ui.html)
+👉接口文档：[查看](http://localhost:5001/digital/doc.html)
 
 # 🍎 预览界面
 
