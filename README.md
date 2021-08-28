@@ -34,7 +34,7 @@
 # 🔨 项目结构
 
 ```
-Pear Admin Pro
+medusa-web-ui
 │
 ├─annex SQL 脚本
 │
@@ -127,46 +127,10 @@ datasource.*
 
 👉后台文档：编写中
 
-👉接口文档：[查看](http://pro.pearadmin.com/swagger-ui.html)
+👉接口文档：[查看](http://localhost:5001/digital/swagger-ui.html)
 
 # 🍎 预览界面
 
 | 预览                 |                界面 |
 |---------------------|---------------------|
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223456_0ae4c5ef_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223516_74b7d454_4835367.png "屏幕截图.png")  |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223618_3bfffbaf_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223637_a152cc0c_4835367.png "屏幕截图.png")   |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223659_657908ab_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223715_4b75622b_4835367.png "屏幕截图.png")  |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223734_eb9f9b7f_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223755_7920c095_4835367.png "屏幕截图.png")   |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223816_2b12d9f2_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223834_d34585b7_4835367.png "屏幕截图.png")   |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223904_247d798f_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/223918_b58717cb_4835367.png "屏幕截图.png")   |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/224003_19a6bcd9_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/224025_9e476d59_4835367.png "屏幕截图.png")  |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/224050_98eda3a7_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/224107_af6484ee_4835367.png "屏幕截图.png")  |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0505/224152_74aaa927_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0506/060337_444d9fcf_4835367.png "屏幕截图.png")  |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0506/060218_aa430b85_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0506/060447_0b579955_4835367.png "屏幕截图.png")  |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0519/100400_d030d63c_4835367.png "屏幕截图.png")  | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0519/100415_ab57979a_4835367.png "屏幕截图.png")  |
-| ![输入图片说明](https://images.gitee.com/uploads/images/2021/0615/020125_945ca205_4835367.png "屏幕截图.png") | ![输入图片说明](https://images.gitee.com/uploads/images/2021/0615/020141_c7b33f29_4835367.png "屏幕截图.png")|
-
-# 💐 特别鸣谢
-
-- 👉 Vue Next：[https://github.com/vuejs/vue-next](https://github.com/vuejs/vue-next)
-- 👉 Ant Design Vue：[https://gitee.com/ant-design-vue/ant-design-vue](https://gitee.com/ant-design-vue/ant-design-vue)
-- 👉 Spring Boot：[https://github.com/spring-projects/spring-boot](https://github.com/spring-projects/spring-boot)
-- 👉 MyBatis Plus：[https://gitee.com/baomidou/mybatis-plus](https://gitee.com/baomidou/mybatis-plus)
-
-# 🍻 贡献代码
-
-<p style="padding:10px;"  width="90%">
-
-1. 欢迎提交 [pull request](https://gitee.com/pear-admin/pear-admin-pro/pulls)，注意对应提交对应 `develop` 分支
-
-2. 欢迎提交 [issue](https://gitee.com/pear-admin/pear-admin-pro/issues)，请写清楚遇到问题的原因、开发环境、复显步骤。
-
-</p>
-
-感谢每一位贡献代码的朋友。
-
-[![Giteye chart](https://chart.giteye.net/gitee/pear-admin/pear-admin-pro/3E4EEFDN.png)](https://giteye.net/chart/3E4EEFDN)
-
-如果对您有帮助，您可以点右上角 💘Star💘支持
-
-
+|   |   |
