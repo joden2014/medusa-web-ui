@@ -7,11 +7,11 @@ class Request {
 
   constructor(config) {
     this.config = config || {
-      timeout: 8000,
+      timeout: 20000,
       withCredentials: true,
       baseURL: process.env.VUE_APP_API_BASE_URL,
       headers: {
-        "Content-Type": "application/json; charset=utf-8"
+        "Content-Type": "application/x-www-form-urlencoded"
       }
     };
   }
@@ -37,7 +37,15 @@ class Request {
             return qs.stringify(params, {arrayFormat: 'repeat'})
           }
         }
+        
+        // if (config.method === "post") {
+        //   config.data = qs.stringify(config.data)
+        // }
 
+        config.transformRequest = [function (data) {
+          // 对 data 进行任意转换处理
+          return qs.stringify(config.data)
+      }]
         return config;
       },
       error => {
@@ -82,5 +90,4 @@ class Request {
   }
 }
 
-const request = new Request();
 export default new Request();

@@ -7,7 +7,8 @@
     "serve-pro": "node generate && vue-cli-service serve --mode production",
     "build-dev": "node generate && vue-cli-service build --mode development",
     "build-pro": "node generate && vue-cli-service build --mode production",
-    "report": "vue-cli-service build --report"
+    "report": "vue-cli-service build --report",
+    "dev": "npm run serve-dev"
   },
   "dependencies": {
     "@ant-design-vue/use": "^0.0.1-alpha.10",
