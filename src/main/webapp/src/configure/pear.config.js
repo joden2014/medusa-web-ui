@@ -13,7 +13,7 @@
   /**
    * 参数 : 网站名称
    * */
-  title: "Medusa Admin",
+  title: "基建RBAC",
 
   /**
    * 参数 : 默认使用的布局

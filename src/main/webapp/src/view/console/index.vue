@@ -15,7 +15,6 @@
               style="margin-top: 16px"
               :percent="30"
               size="small"
-              :stroke-color="{ '0%': color,'100%': color}"
             />
             <a-divider />
             <div class="card-left">访问量</div>
@@ -36,7 +35,6 @@
               size="small"
               status="active"
               :show-info="false"
-              :stroke-color="{ '0%': color,'100%': color}"
             />
             <a-divider />
             <div class="card-left">销售量</div>
@@ -56,7 +54,6 @@
               style="margin-top: 16px"
               :percent="30"
               size="small"
-              :stroke-color="{ '0%': color,'100%': color}"
             />
             <a-divider />
             <div class="card-left">转化率</div>
@@ -77,7 +74,6 @@
               size="small"
               status="active"
               :show-info="false"
-              :stroke-color="{ '0%': color,'100%': color}"
             />
             <a-divider />
             <div class="card-left">用户量</div>
@@ -85,48 +81,48 @@
           </a-card>
         </a-col>
         <a-col :xs="12" :sm="6" :md="6" :lg="3" :xl="3">
-          <card-base color="rgb(105, 192, 255)" icon="BuildFilled" title="用户">
-          </card-base>
+          <quick color="rgb(105, 192, 255)" icon="BuildFilled" title="用户">
+          </quick>
         </a-col>
         <a-col :xs="12" :sm="6" :md="6" :lg="3" :xl="3">
-          <card-base color="rgb(149, 222, 100)" icon="CloudFilled" title="首页">
-          </card-base>
+          <quick color="rgb(149, 222, 100)" icon="CloudFilled" title="首页">
+          </quick>
         </a-col>
         <a-col :xs="12" :sm="6" :md="6" :lg="3" :xl="3">
-          <card-base
+          <quick
             color="rgb(255, 156, 110)"
             icon="CustomerServiceFilled"
             title="访问"
           >
-          </card-base>
+          </quick>
         </a-col>
         <a-col :xs="12" :sm="6" :md="6" :lg="3" :xl="3">
-          <card-base color="rgb(179, 127, 235)" icon="MailFilled" title="邮件">
-          </card-base>
+          <quick color="rgb(179, 127, 235)" icon="MailFilled" title="邮件">
+          </quick>
         </a-col>
         <a-col :xs="12" :sm="6" :md="6" :lg="3" :xl="3">
-          <card-base
+          <quick
             color="rgb(255, 214, 102)"
             icon="NotificationFilled"
             title="消息"
           >
-          </card-base>
+          </quick>
         </a-col>
         <a-col :xs="12" :sm="6" :md="6" :lg="3" :xl="3">
-          <card-base color="rgb(92, 219, 211)" icon="SignalFilled" title="统计">
-          </card-base>
+          <quick color="rgb(92, 219, 211)" icon="SignalFilled" title="统计">
+          </quick>
         </a-col>
         <a-col :xs="12" :sm="6" :md="6" :lg="3" :xl="3">
-          <card-base
+          <quick
             color="rgb(255, 133, 192)"
             icon="TrophyFilled"
             title="排名"
           >
-          </card-base>
+          </quick>
         </a-col>
         <a-col :xs="12" :sm="6" :md="6" :lg="3" :xl="3">
-          <card-base color="rgb(255, 192, 105)" icon="BellFilled" title="通知">
-          </card-base>
+          <quick color="rgb(255, 192, 105)" icon="BellFilled" title="通知">
+          </quick>
         </a-col>
         <a-col :span="24">
           <a-card>
@@ -237,7 +233,7 @@
                 <a-card>
                   <a-statistic
                     title="Feedback"
-                    :value="20.18"
+                    :value="11.28"
                     :precision="2"
                     suffix="%"
                     :value-style="{ color: '#3f8600' }"
@@ -253,7 +249,7 @@
                 <a-card>
                   <a-statistic
                     title="Idle"
-                    :value="12.3"
+                    :value="9.3"
                     :precision="2"
                     suffix="%"
                     class="demo-class"
@@ -294,7 +290,6 @@ export default {
     const chartRef = ref(null);
 
     const store = useStore()
-    const color = computed(() => store.getters.color);
 
     onMounted(() => {
       const datass = [
@@ -329,7 +324,7 @@ export default {
         .interval()
         .position("year*sales")
         .color("year*sales", function(year, sales) {
-          return color.value;
+          return "#1890ff";
         });
 
       chart.interaction("active-region");
@@ -395,8 +390,7 @@ export default {
     return {
       data,
       columns,
-      datas,
-      color
+      datas
     };
   }
 };

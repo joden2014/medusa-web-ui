@@ -10,7 +10,7 @@
   >
     <div>
       <div class="pearone-color">
-        <div class="color-title">菜单风格</div>
+        <div class="color-title">整体风格</div>
         <div class="color-content">
           <ul>
             <li
@@ -367,7 +367,12 @@
           <div class="setting-title-right">固定侧边</div>
           <br />
           <br />
-          <a-select label-in-value v-model:value="tabType" style="width: 100px" @change="onChangeTabType">
+          <a-select
+            label-in-value
+            v-model:value="tabType"
+            style="width: 100px"
+            @change="handleChange"
+          >
             <a-select-option value="pear-dot-tab"> 样式一 </a-select-option>
             <a-select-option value="pear-card-tab"> 样式二 </a-select-option>
             <a-select-option value="pear-label-tab"> 样式三 </a-select-option>
@@ -428,23 +433,22 @@ export default {
     const toggleKeepAlive = function(){
       commit("app/TOGGLE_KEEP_ALIVE");
     };
-    const updateColor = function (color) {
+   const updateColor = function (color) {
       window.less.modifyVars({
           "primary-color": color,
           "btn-primary-bg": color,
       })
       commit("app/UPDATE_COLOR", color);
     };
-    const onChangeTabType = function (value) {
+    const handleChange = function (value) {
       commit("app/UPDATE_TAB_TYPE", value.key);
     };
-    
     return {
       tabType,
       toggleKeepAlive,
       routerAnimate,
       updateRouterAnimate,
-      onChangeTabType,
+      handleChange,
       updateLayout,
       updateTheme,
       updateColor,

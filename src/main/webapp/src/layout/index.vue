@@ -1,6 +1,8 @@
 <template>
   <a-layout id="layout" :class="[theme, layout]">
-    <div v-if="isMobile && !collapsed"
+    <!-- 侧边栏 -->
+    <div
+      v-if="isMobile && !collapsed"
       class="layout_mobile_mask"
       @click="closeSideBar"
     />
@@ -18,17 +20,27 @@
       ]"
     >
       <div class="pear-layout-left-sider">
+        <!-- 顶部图标 -->
         <Logo v-if="logo"></Logo>
+        <!-- 垂直菜单 -->
         <Menu></Menu>
       </div>
     </a-layout-sider>
+    <!-- 右边区域 -->
     <a-layout>
+      <!-- header区域 -->
       <a-layout-header>
         <Header></Header>
       </a-layout-header>
-      <a-layout-content :class="[fixedHeader ? 'fixedHeader' : '', tab ? 'muiltTab' : '']">
+      <!-- 中心区域 -->
+      <a-layout-content
+        :class="[fixedHeader ? 'fixedHeader' : '', tab ? 'muiltTab' : '']"
+      >
+        <!-- 选项卡页面 -->
         <Tab v-if="tab"></Tab>
+        <!-- main区域 -->
         <Content :style="{ overflow: fixedHeader ? 'auto' : '' }"></Content>
+        <!-- 设置页面 -->
         <Setup></Setup>
       </a-layout-content>
     </a-layout>
@@ -50,7 +62,7 @@ export default {
     Header,
     Logo,
     Tab,
-    Setup,
+    Setup
   },
   setup() {
     const { getters, commit } = useStore();
@@ -94,6 +106,7 @@ export default {
       closeSideBar,
       isMobile,
       collapsed,
+      collapsedWidth,
       fixedHeader,
       fixedSide,
       sideWitch,
@@ -101,7 +114,6 @@ export default {
       theme,
       logo,
       tab,
-      collapsedWidth
     };
   }
 };

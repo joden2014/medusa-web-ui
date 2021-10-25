@@ -10,8 +10,8 @@
       >
         <a-form-item>
           <img class="logo" src="@/assets/image/logo.png" />
-          <div class="head">Medusa Admin</div>
-          <div class="desc">通用RBAC统一基础应用平台，构建企业基础建设平台</div>
+          <div class="head">数字化中心</div>
+          <div class="desc">基建RBAC平台</div>
         </a-form-item>
         <a-form-item>
           <a-input
@@ -98,6 +98,7 @@ export default {
 
     // 登录验证
     const onSubmit = () => {
+      debugger
       formRef.value
         .validate()
         .then(async () => {

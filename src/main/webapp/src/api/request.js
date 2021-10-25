@@ -1,10 +1,10 @@
 import axios from "axios";
 import { message as Msg } from "ant-design-vue";
 import store from "../store";
-import qs from 'qs';
-
+import qs from "qs";
+import Router from "../route";
+import NProgress from "nprogress";
 class Request {
-
   constructor(config) {
     this.config = config || {
       timeout: 20000,
@@ -17,35 +17,35 @@ class Request {
   }
 
   interceptors(instance) {
-    
     /// 请求拦截
     instance.interceptors.request.use(
       config => {
-        
         /// 权鉴相关
-        const tokenKey = localStorage.getItem("token_key");
-        const token = localStorage.getItem("token")
-        if(token) config.headers["Authorization"] = token;
-        if(tokenKey) config.headers["Authorization-key"] = tokenKey;
+        // const tokenKey = localStorage.getItem("token_key");
+        const token = localStorage.getItem("token");
+        if (token) config.headers["Authorization"] = `Bearer ${token}`;
+        // if(tokenKey) config.headers["Authorization-key"] = tokenKey;
         config.cancelToken = new axios.CancelToken(async cancel => {
           await store.dispatch("app/execCancelToken", { cancelToken: cancel });
         });
-        
+
         /// 格式化 []
-        if (config.method === 'delete') {
-          config.paramsSerializer = (params) => {
-            return qs.stringify(params, {arrayFormat: 'repeat'})
-          }
+        if (config.method === "delete") {
+          config.paramsSerializer = params => {
+            return qs.stringify(params, { arrayFormat: "repeat" });
+          };
         }
-        
+
         // if (config.method === "post") {
         //   config.data = qs.stringify(config.data)
         // }
 
-        config.transformRequest = [function (data) {
-          // 对 data 进行任意转换处理
-          return qs.stringify(config.data)
-      }]
+        config.transformRequest = [
+          function(data) {
+            // 对 data 进行任意转换处理
+            return qs.stringify(config.data);
+          }
+        ];
         return config;
       },
       error => {
@@ -56,18 +56,33 @@ class Request {
     /// 响应拦截
     instance.interceptors.response.use(
       response => {
-        return response.data;
+        const { code, success, message } = response.data;
+        if (success) {
+          return response.data;
+        } else {
+          Msg.error(message);
+          return Promise.reject(success);
+        }
       },
       error => {
         if (error.response) {
-          const {status} = error.response;
+          const { status } = error.response;
           if (status === 404) {
             Msg.error("接口不存在");
           }
+          if (status === 403 || status === 401) {
+            store.commit('user/SET_USER_TOKEN')
+            Router.push({ path: "/login", replace: true });
+            const message = "登录失效，请重新登录";
+            Msg.error(message);
+          }
+          // if(status === 401){
+          //   store.dispatch('user/refreshToken')
+          // }
         } else {
           let { message } = error;
           if (message === "Network Error") {
-            message = "连接异常"
+            message = "连接异常";
           }
           if (message.includes("timeout")) {
             message = "请求超时";
@@ -77,6 +92,7 @@ class Request {
           }
           Msg.error(message);
         }
+        NProgress.done();
         return Promise.reject(error);
       }
     );

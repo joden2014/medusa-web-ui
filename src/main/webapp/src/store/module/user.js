@@ -1,6 +1,7 @@
-import { menu, power, login, logout } from "@/api/module/user";
+import { menu, power, login, logout, userInfo, refreshToken } from "@/api/module/user";
 import { generateRoute, generatePower } from "@/route/permission";
 import { message } from "ant-design-vue";
+import initMenu from '../../route/module/init-routes' // 初始化菜单
 
 const state = {
   token: localStorage.getItem("token") ? localStorage.getItem("token") : "",
@@ -15,7 +16,7 @@ const mutations = {
     if (token) {
       state.tokenKey = token.key;
       state.token = token.value;
-      localStorage.setItem('token_key',token.key)
+      localStorage.setItem('token_key',token.key) // 刷新token
       localStorage.setItem('token', token.value)
     } else {
       state.tokenKey = '';
@@ -52,13 +53,25 @@ const mutations = {
 
 const actions = {
 
-  async login( {commit} ,data) {
-    const { code, msg, token, tokenKey } = await login(data);
-    if (code === 200) {
-      commit('SET_USER_TOKEN', { key:tokenKey , value:token });
+  async refreshToken( {commit} ) {
+    const params = {
+      refreshToken: state.tokenKey
+    }
+    const { code, message, data } = await refreshToken(params);
+    if (code === '200') {
+      commit('SET_USER_TOKEN', { key: data.refresh_token, value: data.access_token });
       return Promise.resolve();
     } else {
-      return Promise.reject(msg);
+      return Promise.reject(message);
+    }
+  },
+  async login( {commit} ,params) {
+    const { code, message, data } = await login(params);
+    if (code === '200') {
+      commit('SET_USER_TOKEN', { key: data.refresh_token, value: data.access_token });
+      return Promise.resolve();
+    } else {
+      return Promise.reject(message);
     }
   },
 
@@ -73,13 +86,19 @@ const actions = {
   },
 
   async addRoute( {commit} ) {
-    const { data } = await menu()
-    commit('SET_USER_ROUTE', generateRoute(data))
+    const { userId } = JSON.parse(state.userInfo)
+    const { data } = await menu( { userId } )
+    commit('SET_USER_ROUTE', generateRoute(data[0].menuPath === null ? initMenu : data))
   },
 
   async addPower( {commit} ) {
-    const { data } = await power()
+    const { userId } = JSON.parse(state.userInfo)
+    const { data } = await power( {userId} )
     commit('SET_USER_POWER', generatePower(data))
+  },
+  async getUserInfo( {commit} ){
+    const { data } = await userInfo()
+    commit('SET_USER_INFO', data)
   }
 
 }

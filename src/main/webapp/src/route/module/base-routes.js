@@ -3,7 +3,7 @@ import Layout from "@/layout";
 export default [
   {
     path: '/',
-    redirect: "/dashboard/workspace",
+    redirect: "/digital/workspace",
     hidden: true,
   },
   {

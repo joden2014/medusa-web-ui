@@ -2,8 +2,8 @@ import Layout from "@/layout";
 
 export default {
    Layout,
-  'dashboard-console': () => import('@/view/console/index.vue'),
-  'dashboard-workspace': () => import('@/view/space/index.vue'),
+  'digital-console': () => import('@/view/console/index.vue'),
+  'digital-workspace': () => import('@/view/space/index.vue'),
   'result-success': () => import('@/view/result/success.vue'),
   'result-failure': () => import('@/view/result/failure.vue'),
   'error-403': () => import('@/view/error/403.vue'),
@@ -32,4 +32,5 @@ export default {
   'inbox': () => import('@/view/inbox/index.vue'),
   'tenant': () => import('@/view/tenant/index.vue'),
   'sms': () => import('@/view/sms/index.vue'),
+  'appSystem': ()=> import('@/view/application/index.vue') // 应用管理
 }

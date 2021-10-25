@@ -13,10 +13,10 @@ module.exports = {
   outputDir: "dist/admin",
   devServer: {
     open: true, // 自动
-    port: 8080, // 端口
+    port: 8088, // 端口
     proxy: {
       "/digital": {
-        target: "http://192.168.1.9:5001/digital",
+        target: "http://192.168.1.211:5001/digital",
         changeOrigin: "true",
         logLevel: "debug",
         pathRewrite: {

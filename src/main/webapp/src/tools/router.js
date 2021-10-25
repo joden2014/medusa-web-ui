@@ -7,10 +7,9 @@
  */
 export const inCloudRoute = (routes, routePath) => {
     let hasRoute = false
-
     for (let i = 0; i < routes.length; i++) {
       const { path, children = [] } = routes[i]
-      if (path === routePath) {
+      if (routePath.includes(path)) {
         hasRoute = true
       } else if (children.length > 0) {
         hasRoute = inCloudRoute(children, routePath)

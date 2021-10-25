@@ -7,7 +7,7 @@
         <a-input v-model:value="formState[param.key]" v-show="!param.hidden || !hidden" v-if="param.type == 'input'" type="text">
         </a-input>
         <!-- 选择框 -->
-        <a-select v-if="param.type == 'select'" v-model:value="formState[param.key]" class="pro-query-select">
+        <a-select v-if="param.type == 'select'" style="min-width:150px" v-model:value="formState[param.key]" class="pro-query-select">
             <a-select-option :key="index" v-for="(option,index) in param.options" :value="option.value">{{option.text}}</a-select-option>
         </a-select>
       </a-form-item>

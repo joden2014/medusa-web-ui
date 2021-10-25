@@ -9,14 +9,24 @@ const Api = {
   edit: "/api/sys/user/edit",
   editPassword: "/api/sys/user/password/edit",
   resetPassword: "/api/sys/user/password/reset",
-  menu: "/api/sys/user/menu",
-  power: "/api/sys/user/power",
+  menu: "/api/menu/privilege", // 根据用户获取菜单
+  power: "/api/role/listByUserId",
   remove: "/api/sys/user/remove",
   removeBatch: "/api/sys/user/removeBatch",
   role: "/api/sys/user/role",
-  login: "/api/user/login",
-  logout: "/api/logout",
-  profile: "/api/sys/user/profile"
+  login: "/api/user/login", // 登录接口
+  logout: "/api/user/logout",
+  profile: "/api/sys/user/profile",
+  userInfo: "/api/user/userInfo", // 获取用户信息
+  refreshToken: "/api/user/refresh/token" // 刷新token
+};
+/** 获取用户信息 */
+export const userInfo = params => {
+  return request.request({
+    url: Api.userInfo,
+    params,
+    method: "get"
+  });
 };
 
 /** 登录 */
@@ -65,10 +75,9 @@ export const profile = data => {
 };
 
 /** 用户菜单 */
-export const menu = data => {
+export const menu = ({ userId }) => {
   return request.request({
-    url: Api.menu,
-    params: data,
+    url: `${Api.menu}/${userId}`,
     method: "GET"
   });
 };
@@ -153,3 +162,11 @@ export const removeBatch = data => {
     method: "DELETE"
   });
 };
+
+export const refreshToken = data => {
+  return request.request({
+    url: Api.refreshToken,
+    data,
+    method: 'post'
+  })
+}
