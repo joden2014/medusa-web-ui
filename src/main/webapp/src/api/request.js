@@ -11,7 +11,7 @@ class Request {
       withCredentials: true,
       baseURL: process.env.VUE_APP_API_BASE_URL,
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
       }
     };
   }
@@ -30,22 +30,23 @@ class Request {
         });
 
         /// 格式化 []
-        if (config.method === "delete") {
-          config.paramsSerializer = params => {
-            return qs.stringify(params, { arrayFormat: "repeat" });
-          };
-        }
-
-        // if (config.method === "post") {
-        //   config.data = qs.stringify(config.data)
+        // if (config.method === "delete") {
+        //   config.paramsSerializer = params => {
+        //     return qs.stringify(params, { arrayFormat: "repeat" });
+        //   };
         // }
-
-        config.transformRequest = [
-          function(data) {
-            // 对 data 进行任意转换处理
-            return qs.stringify(config.data);
-          }
-        ];
+        if (
+          config.method === "post" &&
+          config.headers["Content-Type"] ===
+            "application/x-www-form-urlencoded;charset=UTF-8"
+        ) {
+          config.transformRequest = [
+            function(data) {
+              // 对 data 进行任意转换处理
+              return qs.stringify(config.data);
+            }
+          ];
+        }
         return config;
       },
       error => {
@@ -71,7 +72,7 @@ class Request {
             Msg.error("接口不存在");
           }
           if (status === 403 || status === 401) {
-            store.commit('user/SET_USER_TOKEN')
+            store.commit("user/SET_USER_TOKEN");
             Router.push({ path: "/login", replace: true });
             const message = "登录失效，请重新登录";
             Msg.error(message);
@@ -103,6 +104,16 @@ class Request {
     const requestOptions = Object.assign({}, this.config, options);
     this.interceptors(instance);
     return instance(requestOptions);
+  }
+
+  // 删除
+  delete({ url }, config = {}) {
+    const instance = axios.create({ ...this.config });
+    this.interceptors(instance);
+    return instance.delete(
+      url,
+      Object.keys(config).length ? { data: config } : null
+    );
   }
 }
 

@@ -76,8 +76,11 @@ const actions = {
   },
 
   async logout( {commit} ) {
-    const { msg } = await logout();
-    message.success(msg, 0.5).then(function(){
+    const params = {
+      accessToken: state.token
+    }
+    await logout(params);
+    message.success('退出成功', 0.5).then(function(){
       commit('SET_USER_TOKEN');
       commit('SET_USER_ROUTE');
       window.location.reload();

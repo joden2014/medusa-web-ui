@@ -27,7 +27,7 @@
           </a-card>
         </a-col>
       </a-row>
-      <save :visible="state.visibleSave" @close="closeSave"></save>
+      <save :visible="state.visibleSave" @close="closeSave" @reload="reloadTable"></save>
       <edit :visible="state.visibleEdit" @close="closeEdit" :record="state.recordEdit"></edit>
       <info :visible="state.visibleInfo" @close="closeInfo" :record="state.recordInfo"></info>
     </page-layout>
@@ -65,7 +65,7 @@ export default {
       { dataIndex: "description", key: "description", title: "描述" },
       { dataIndex: "applicationTypeDesc", key: "applicationTypeDesc", title: "应用系统类型" },
       { dataIndex: "status", key: "state", title: "状态", conver: converFormat },
-      { dataIndex: "createTime", key: "createTime", title: "生效时间" },
+      { dataIndex: "startTime", key: "startTime", title: "生效时间" },
       { dataIndex: "endTime", key: "endTime", title: "截止时间" },
     ];
 
@@ -123,6 +123,9 @@ export default {
       pageSize: 10,
     }
 
+    const reloadTable = ()=> {
+      tableRef.value.reload()
+    }
     /// 外置参数 - 当参数改变时, 重新触发 fetch 函数
     const state = reactive({
       selectedRowKeys: [],
@@ -175,7 +178,8 @@ export default {
       closeInfo,
       
       onSelectChange,
-      tableRef
+      tableRef,
+      reloadTable
     };
   },
 };

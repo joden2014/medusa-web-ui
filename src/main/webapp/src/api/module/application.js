@@ -4,8 +4,9 @@ import request from "../request";
 /** 接口 */
 const Api = {
   page: "/api/application/page",
-  remove: '/api/application/remove/',
-  add: '/api/application/save'
+  remove: "/api/application/remove/",
+  add: "/api/application/save",
+  uploadIcon: "/api/application/upload/logo/"
 };
 /** 获取应用信息 */
 export const queryList = params => {
@@ -18,17 +19,24 @@ export const queryList = params => {
 
 // 删除应用
 export const remove = data => {
-    return request.request({
-    url: `${Api.page}${data.applicationId}`,
-    method: "DELETE"
+  return request.delete({
+    url: `${Api.remove}${data.applicationId}`
   });
-}
+};
 
 // 保存应用
 export const addApp = data => {
   return request.request({
     url: Api.add,
     data,
-    method: "post"
+    method: "post",
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8"
+    }
   });
+};
+
+// 上传应用图标
+export const uploadLogo = data => {
+  return `${Api.uploadIcon}${data.applicationId}`;
 };

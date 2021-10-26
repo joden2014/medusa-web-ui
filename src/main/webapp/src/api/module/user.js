@@ -39,10 +39,10 @@ export const login = data => {
 };
 
 /** 注销 */
-export const logout = data => {
+export const logout = params => {
   return request.request({
     url: Api.logout,
-    data: data,
+    params,
     method: "GET"
   });
 };
