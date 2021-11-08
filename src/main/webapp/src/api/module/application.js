@@ -6,7 +6,8 @@ const Api = {
   page: "/api/application/page",
   remove: "/api/application/remove/",
   add: "/api/application/save",
-  uploadIcon: "/api/application/upload/logo/"
+  uploadIcon: "/api/application/upload/logo/",
+  appMenu: "/api/menu/byApplication/"
 };
 /** 获取应用信息 */
 export const queryList = params => {
@@ -40,3 +41,10 @@ export const addApp = data => {
 export const uploadLogo = data => {
   return `${Api.uploadIcon}${data.applicationId}`;
 };
+
+export const getAppMenu = params => {
+  return request.request({
+    url: `${Api.appMenu}${params.applicationId}`,
+    method: "get"
+  })
+}

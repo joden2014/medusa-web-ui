@@ -4,7 +4,6 @@ import { useStore } from "vuex";
 import { findParent, findParentAll } from '@/tools/common';
 
 export function useMenu() {
-
     const { getters } = useStore();
     const route = useRoute();
     const router = useRouter();
@@ -36,7 +35,6 @@ export function useMenu() {
         openKeys.value = result;
         lastOpenKeys.value = result;
     }
-
     return {
         selectedKeys, openKeys, openChange, menus
     }
