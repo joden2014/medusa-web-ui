@@ -7,44 +7,109 @@ const Api = {
   remove: "/api/application/remove/",
   add: "/api/application/save",
   uploadIcon: "/api/application/upload/logo/",
-  appMenu: "/api/menu/byApplication/"
+  appMenu: "/api/menu/byApplication/", // 获取应用菜单
+  saveMenu: "/api/menu/save", // 保存应用菜单
+  deleteMenu: "/api/menu/delete/",
+  updateApp: "/api/application/update", // 更新应用
+  getAppById: "/api/application/byId/",
+  getAppMenuById: "/api/menu/info",
+  updateMenu: "/api/menu/update", // 修改菜单
 };
 /** 获取应用信息 */
-export const queryList = params => {
+export const queryList = (params) => {
   return request.request({
     url: Api.page,
     params,
-    method: "get"
+    method: "get",
   });
 };
 
 // 删除应用
-export const remove = data => {
+export const remove = (data) => {
   return request.delete({
-    url: `${Api.remove}${data.applicationId}`
+    url: `${Api.remove}${data.applicationId}`,
   });
 };
 
 // 保存应用
-export const addApp = data => {
+export const addApp = (data) => {
   return request.request({
     url: Api.add,
     data,
     method: "post",
     headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+      "Content-Type": "application/json;charset=UTF-8",
+    },
   });
 };
 
 // 上传应用图标
-export const uploadLogo = data => {
+export const uploadLogo = (data) => {
   return `${Api.uploadIcon}${data.applicationId}`;
 };
 
-export const getAppMenu = params => {
+// 获取应用菜单
+export const getAppMenu = (params) => {
   return request.request({
     url: `${Api.appMenu}${params.applicationId}`,
-    method: "get"
-  })
-}
+    method: "get",
+  });
+};
+
+export const addMenu = (data) => {
+  return request.request({
+    url: Api.saveMenu,
+    data,
+    method: "post",
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+    },
+  });
+};
+
+export const deleteMenu = (data) => {
+  return request.delete({
+    url: `${Api.deleteMenu}${data.menuId}`,
+  });
+};
+
+// 更新应用
+export const updateApp = (data) => {
+  return request.request({
+    url: Api.updateApp,
+    data,
+    method: "post",
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+    },
+  });
+};
+
+// 获取应用详情
+export const getAppById = (params) => {
+  return request.request({
+    url: `${Api.getAppById}${params.applicationId}`,
+    method: "get",
+  });
+};
+
+// 获取菜单详情
+export const getMenuById = (params) => {
+  return request.request({
+    url: Api.getAppMenuById,
+    params,
+    method: "get",
+  });
+};
+
+// 修改菜单
+export const updateMenu = (data) => {
+  return request.request({
+    url: Api.updateMenu,
+    data,
+    method: "put",
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+    },
+  });
+};

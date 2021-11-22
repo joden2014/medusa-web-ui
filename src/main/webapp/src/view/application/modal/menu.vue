@@ -7,78 +7,53 @@
     @ok="submit"
     @cancel="cancel"
   >
-    <a-tree :tree-data="treeData" show-icon default-expand-all>
-      <template #title="item">
-        <span>{{ item.title }}</span>
-        <!-- 删除节点 -->
-        <span class="icon-wrap">
-          <DeleteOutlined />
-          <!-- 编辑节点 -->
-          <FormOutlined />
-          <!-- 新增节点 -->
-          <PlusOutlined />
-        </span>
-      </template>
-    </a-tree>
+    <div class="tree-box">
+      <type-tree
+        @onSelect="onSelect"
+        :action="true"
+        v-if="visible"
+        :applicationId="record.applicationId"
+        ref="treeData"
+      />
+    </div>
   </a-modal>
 </template>
 <script>
-import {
-  DeleteOutlined,
-  PlusOutlined,
-  FormOutlined
-} from "@ant-design/icons-vue";
-import { getAppMenu } from "@/api/module/application";
+import typeTree from "@/component/tree/index.vue";
 import { defineComponent, reactive, ref, watch } from "vue";
-const treeData = [
-  {
-    title: "parent 1",
-    key: "0-0",
-    children: [
-      {
-        title: "leaf",
-        key: "0-0-0"
-      },
-      {
-        title: "leaf",
-        key: "0-0-1"
-      }
-    ]
-  }
-];
 export default defineComponent({
+  components: { typeTree },
   props: {
     visible: {
-      type: Boolean
+      type: Boolean,
     },
     record: {
-      type: Object
-    }
+      type: Object,
+    },
   },
-  components: { DeleteOutlined, PlusOutlined, FormOutlined },
   emit: ["close"],
   setup(props, context) {
-    const submit = e => {
+    const treeData = ref(null);
+    const submit = (e) => {
+      console.log(treeData.value);
       context.emit("close", false);
     };
 
-    const cancel = e => {
+    const cancel = (e) => {
       context.emit("close", false);
     };
-    const getAPPMenuData = applicationId => {
-      getAppMenu({ applicationId }).then(res => {
-        console.log(res);
-      });
-    };
-    getAPPMenuData(props.applicationId);
+
     return {
       submit,
       cancel,
       treeData,
-      getAPPMenuData
     };
   },
-  methods: {}
+  methods: {
+    onSelect() {
+      alert(111);
+    },
+  },
 });
 </script>
 

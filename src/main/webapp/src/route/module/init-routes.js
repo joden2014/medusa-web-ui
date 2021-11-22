@@ -24,7 +24,7 @@ const menu = [
         link: "",
         hidden: false,
         status: true,
-        id: "1"
+        id: "1",
       },
       {
         parent: "1",
@@ -33,13 +33,26 @@ const menu = [
         type: "menu",
         icon: "DashboardOutlined",
         menuName: "应用管理",
-        sort: 0,
+        sort: 1,
         link: "",
         hidden: false,
         status: true,
-        id: "2"
-      }
-    ]
-  }
+        id: "2",
+      },
+      {
+        parent: "1",
+        menuPath: "/digital/department",
+        pathName: "department",
+        type: "menu",
+        icon: "DashboardOutlined",
+        menuName: "部门管理",
+        sort: 2,
+        link: "",
+        hidden: false,
+        status: true,
+        id: "3",
+      },
+    ],
+  },
 ];
 export default menu;

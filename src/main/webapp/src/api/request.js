@@ -4,6 +4,7 @@ import store from "../store";
 import qs from "qs";
 import Router from "../route";
 import NProgress from "nprogress";
+axios.defaults.headers.put['Content-Type'] = 'application/json;charset=UTF-8';
 class Request {
   constructor(config) {
     this.config = config || {
@@ -11,24 +12,23 @@ class Request {
       withCredentials: true,
       baseURL: process.env.VUE_APP_API_BASE_URL,
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-      }
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      },
     };
   }
 
   interceptors(instance) {
     /// 请求拦截
     instance.interceptors.request.use(
-      config => {
+      (config) => {
         /// 权鉴相关
         // const tokenKey = localStorage.getItem("token_key");
         const token = localStorage.getItem("token");
         if (token) config.headers["Authorization"] = `Bearer ${token}`;
         // if(tokenKey) config.headers["Authorization-key"] = tokenKey;
-        config.cancelToken = new axios.CancelToken(async cancel => {
+        config.cancelToken = new axios.CancelToken(async (cancel) => {
           await store.dispatch("app/execCancelToken", { cancelToken: cancel });
         });
-
         /// 格式化 []
         // if (config.method === "delete") {
         //   config.paramsSerializer = params => {
@@ -41,22 +41,22 @@ class Request {
             "application/x-www-form-urlencoded;charset=UTF-8"
         ) {
           config.transformRequest = [
-            function(data) {
+            function (data) {
               // 对 data 进行任意转换处理
               return qs.stringify(config.data);
-            }
+            },
           ];
         }
         return config;
       },
-      error => {
+      (error) => {
         return Promise.reject(error);
       }
     );
 
     /// 响应拦截
     instance.interceptors.response.use(
-      response => {
+      (response) => {
         const { code, success, message } = response.data;
         if (success) {
           return response.data;
@@ -65,7 +65,7 @@ class Request {
           return Promise.reject(success);
         }
       },
-      error => {
+      (error) => {
         if (error.response) {
           const { status } = error.response;
           if (status === 404) {
@@ -110,10 +110,10 @@ class Request {
   delete({ url }, config = {}) {
     const instance = axios.create({ ...this.config });
     this.interceptors(instance);
-    return instance.delete(
-      url,
-      Object.keys(config).length ? { data: config } : null
-    );
+    config.headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+    return instance.delete(url, { data: config });
   }
 }
 

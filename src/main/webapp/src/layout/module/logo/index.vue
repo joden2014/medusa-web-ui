@@ -2,7 +2,7 @@
   <div id="logo">
     <!-- 图片 -->
     <span v-if="collapsed">
-      <img class="image" :src="image" />
+      <img class="image" :src="require(image)" />
     </span>
     <!-- 标题 -->
     <div v-else>

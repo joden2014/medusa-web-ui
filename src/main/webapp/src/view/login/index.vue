@@ -26,25 +26,6 @@
             v-model:value="formState.password"
           />
         </a-form-item>
-<!--        <a-form-item class="captchaKey">-->
-<!--          <a-input v-model:value="formState.captchaKey" />-->
-<!--        </a-form-item>-->
-<!--        <a-form-item>-->
-<!--          <a-row :gutter="10">-->
-<!--            <a-col :span="13">-->
-<!--              <a-input v-model:value="formState.captchaCode" />-->
-<!--            </a-col>-->
-<!--            <a-col :span="11">-->
-<!--              <img-->
-<!--                class="captchaImage"-->
-<!--                @click="refreshCaptcha"-->
-<!--                style="margin-top: -3px"-->
-<!--                :src="formState.captchaImage"-->
-<!--                alt="连接失败"-->
-<!--              />-->
-<!--            </a-col>-->
-<!--          </a-row>-->
-<!--        </a-form-item>-->
         <a-form-item>
           <a-checkbox :checked="true"> 记住我 </a-checkbox>
           <a class="forgot" href=""> 忘记密码 </a>
@@ -98,7 +79,6 @@ export default {
 
     // 登录验证
     const onSubmit = () => {
-      debugger
       formRef.value
         .validate()
         .then(async () => {

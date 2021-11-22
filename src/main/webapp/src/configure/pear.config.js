@@ -8,7 +8,7 @@
   /**
    * 参数 : 网站图标
    */
-  image: "https://gitee.com/pear-admin/Pear-Admin-Layui/raw/master/admin/images/logo.png",
+  image: "@/assets/image/logo.png",
 
   /**
    * 参数 : 网站名称
@@ -76,7 +76,7 @@
    * true
    * false
    * */
-  keepAlive: true,
+  keepAlive: false,
 
   /**
    * 参数: 是否固定顶部
