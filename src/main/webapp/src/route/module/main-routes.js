@@ -34,4 +34,5 @@ export default {
   sms: () => import("@/view/sms/index.vue"),
   appSystem: () => import("@/view/application/index.vue"), // 应用管理
   department: () => import("@/view/department/index"),
+  staff: () => import("@/view/staff/index"),
 };

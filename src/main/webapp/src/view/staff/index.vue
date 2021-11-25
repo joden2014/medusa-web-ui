@@ -31,47 +31,6 @@
                 新建
               </a-button>
             </a-col>
-            <a-col :span="12">
-              <a-row type="flex" justify="end">
-                <a-col v-if="state.recordEdit.isOrganise">
-                  <div class="upload-icon">
-                    <a-upload
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      list-type="picture-card"
-                      v-model:file-list="fileList"
-                      @preview="handlePreview"
-                    >
-                      <div v-if="fileList.length < 1" class="upload-file">
-                        <plus-outlined />
-                        <div class="ant-upload-text">上传LOGO图片</div>
-                      </div>
-                    </a-upload>
-                    <a-modal
-                      :visible="previewVisible"
-                      :footer="null"
-                      @cancel="handleCancel"
-                    >
-                      <img
-                        alt="example"
-                        style="width: 100%"
-                        :src="previewImage"
-                      />
-                    </a-modal>
-                  </div>
-                </a-col>
-                <a-col class="btns">
-                  <a-button type="primary" size="large" @click="add(true)">
-                    修改
-                  </a-button>
-                  <a-button
-                    size="large"
-                    @click="remove(state.recordEdit.departmentId)"
-                  >
-                    删除
-                  </a-button>
-                </a-col>
-              </a-row>
-            </a-col>
           </a-row>
           <a-row type="flex" class="flex" wrap>
             <a-col :span="8" class="flex-item"
@@ -92,10 +51,8 @@
             <a-col :span="8" class="flex-item"
               >是否机构：{{ state.recordEdit.isOrganise ? "是" : "否" }}</a-col
             >
-            <a-col :span="8" class="flex-item"
-              >负责人：{{ state.recordEdit.leader }}</a-col
-            >
-            <!-- <a-col :span="8" class="flex-item">更新时间：2021-10-23</a-col> -->
+            <a-col :span="8" class="flex-item">创建时间：2021-09-22</a-col>
+            <a-col :span="8" class="flex-item">更新时间：2021-10-23</a-col>
             <a-col :span="8" class="flex-item"
               >排序：{{ state.recordEdit.sort }}</a-col
             >
@@ -105,9 +62,7 @@
             <!-- <a-col :span="8" class="flex-item">是否虚拟部门：是</a-col> -->
           </a-row>
           <a-row type="flex" class="flex border">
-            <a-col :span="24" class="flex-item"
-              >描述：{{ state.recordEdit.description }}</a-col
-            >
+            <a-col :span="24" class="flex-item">描述：-</a-col>
           </a-row>
           <h3 class="title">基础信息配置</h3>
           <a-row type="flex" class="flex" wrap>
@@ -122,7 +77,7 @@
     <save
       :visible="state.visibleSave"
       @close="closeSave"
-      @reload="reload"
+      @reload="queryTreeList"
       :record="state.recordEdit"
       :isEdit="state.isEdit"
       v-if="state.visibleSave"
@@ -135,7 +90,11 @@ import { message, Modal } from "ant-design-vue";
 import save from "./modal/save";
 import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { defineComponent, ref, watch, reactive, createVNode } from "vue";
-import { queryList, getDepById, deleteDep } from "@/api/module/department";
+import {
+  queryList,
+  getDepById,
+  deleteDep,
+} from "@/api/module/department";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -155,16 +114,16 @@ export default defineComponent({
     const searchValue = ref("");
     const autoExpandParent = ref(true);
     const gData = ref([]);
-    const selectedKeys = ref(["100"]); // 选中
+    const selectedKeys = ref([100]); // 选中
     let replaceFields = reactive({
       title: "departmentName",
-      key: "departmentId",
+      key: "organiseId",
       children: "childDepartments"
     });
     // 选中书节点触发
-    const onSelect = (keys, { node }) => {
+    const onSelect = (keys, data) => {
       selectedKeys.value = keys;
-      getDepDetail(node.dataRef.departmentId);
+      getDepDetail(data.node.eventKey);
     };
 
     watch(searchValue, value => {});
@@ -185,22 +144,10 @@ export default defineComponent({
     const handleChange = ({ fileList: newFileList }) => {
       fileList.value = newFileList;
     };
-    function initTree(list) {
-      const loop = _list => {
-        _list.map(v => {
-          v.departmentId = v.departmentId + ""; // 转成字符串
-          if (v.childDepartments && v.childDepartments.length) {
-            loop(v.childDepartments);
-          }
-        });
-      };
-      loop(list);
-      return list;
-    }
+
     const queryTreeList = async () => {
       const data = await queryList({ departmentId: 100 });
-      const list = [data.data];
-      gData.value = initTree(list);
+      gData.value = [data.data];
     };
 
     const state = reactive({
@@ -211,10 +158,7 @@ export default defineComponent({
       isEdit: false
     });
     queryTreeList();
-    const reload = () => {
-      getDepDetail(selectedKeys.value[0]);
-      queryTreeList();
-    };
+
     // 获取详情
     const getDepDetail = async departmentId => {
       const { data } = await getDepById({ departmentId });
@@ -237,8 +181,6 @@ export default defineComponent({
         cancelText: "取消",
         onOk: async () => {
           await deleteDep({ departmentId });
-          selectedKeys.value = ["100"];
-          getDepDetail(selectedKeys.value[0]);
           queryTreeList();
         }
       });
@@ -264,8 +206,7 @@ export default defineComponent({
       selectedKeys,
       add,
       closeSave,
-      remove,
-      reload
+      remove
     };
   }
 });
