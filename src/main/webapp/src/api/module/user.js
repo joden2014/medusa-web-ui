@@ -17,6 +17,7 @@ const Api = {
   login: "/api/user/login", // 登录接口
   logout: "/api/user/logout",
   profile: "/api/sys/user/profile",
+  isAdmin: "/api/user/isAdmin",
   userInfo: "/api/user/userInfo", // 获取用户信息
   refreshToken: "/api/user/refresh/token" // 刷新token
 };
@@ -170,3 +171,12 @@ export const refreshToken = data => {
     method: 'post'
   })
 }
+
+// 获取当前登录者是否为管理员
+export const getUserType = params => {
+  return request.request({
+    url: Api.isAdmin,
+    method: "get",
+    params
+  });
+};

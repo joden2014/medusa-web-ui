@@ -19,7 +19,7 @@
   </a-modal>
 </template>
 <script>
-import typeTree from "@/component/tree/index.vue";
+import typeTree from "./tree/index.vue";
 import { defineComponent, reactive, ref, watch } from "vue";
 export default defineComponent({
   components: { typeTree },

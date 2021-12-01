@@ -14,6 +14,7 @@ const Api = {
   getAppById: "/api/application/byId/",
   getAppMenuById: "/api/menu/info",
   updateMenu: "/api/menu/update", // 修改菜单
+  switchStatus: "/api/application/disabled" // 修改应用状态
 };
 /** 获取应用信息 */
 export const queryList = (params) => {
@@ -111,5 +112,13 @@ export const updateMenu = (data) => {
     headers: {
       "Content-Type": "application/json;charset=UTF-8",
     },
+  });
+};
+
+export const switchStatus = (data) => {
+  return request.request({
+    url: Api.switchStatus,
+    data,
+    method: "post"
   });
 };

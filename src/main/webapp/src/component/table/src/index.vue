@@ -82,9 +82,15 @@
           </a-button>
           <template #overlay>
             <a-menu :selectedKeys="[size]">
-              <a-menu-item @click="changeSize('default')" key="default">默认尺寸</a-menu-item>
-              <a-menu-item @click="changeSize('middle')" key="middle">中等尺寸</a-menu-item>
-              <a-menu-item @click="changeSize('small')" key="small">最小尺寸</a-menu-item>
+              <a-menu-item @click="changeSize('default')" key="default"
+                >默认尺寸</a-menu-item
+              >
+              <a-menu-item @click="changeSize('middle')" key="middle"
+                >中等尺寸</a-menu-item
+              >
+              <a-menu-item @click="changeSize('small')" key="small"
+                >最小尺寸</a-menu-item
+              >
             </a-menu>
           </template>
         </a-dropdown>
@@ -146,6 +152,8 @@
           <a-switch
             @change="column.switch.event($event, record)"
             :checked="record[column.dataIndex] === column.switch.yes"
+            :checked-children="column.switch?.checkedStr"
+            :un-checked-children="column.switch?.unCheckedStr"
           />
         </span>
 
@@ -168,7 +176,7 @@
           >
             <template #icon><UserOutlined /></template>
           </a-avatar>
-          
+
           <!-- 非头像 -->
           <a-avatar
             v-else
@@ -190,7 +198,6 @@
         <span v-else-if="record">
           {{ record[column.dataIndex] }}
         </span>
-
       </template>
     </a-table>
   </div>
@@ -204,7 +211,7 @@ import {
   ExportOutlined,
   SyncOutlined,
   UserOutlined,
-  ColumnHeightOutlined,
+  ColumnHeightOutlined
 } from "@ant-design/icons-vue";
 
 const TProps = T.props;
@@ -215,43 +222,43 @@ export default defineComponent({
     AppstoreOutlined,
     ExportOutlined,
     SyncOutlined,
-    UserOutlined,
+    UserOutlined
   },
   /// 数据来源
   props: Object.assign({}, TProps, {
     /// 扩展参数
     param: {
-      type: Object,
+      type: Object
     },
     /// 数据来源
     fetch: {
       type: Function,
-      required: false,
+      required: false
     },
     /// 数据解析
     columns: {
       type: Array,
-      required: true,
+      required: true
     },
     /// 头工具栏
     toolbar: {
-      type: Array,
+      type: Array
     },
     /// 行工具栏
     operate: {
       type: Array || Boolean,
-      default: false,
+      default: false
     },
     /// 分页参数
     pagination: {
       type: [Object, Boolean],
-      default: false,
+      default: false
     },
     rowSelection: {
-      type: Object,
+      type: Object
     },
     rowKey: {
-      default: 'id'
+      default: "id"
     }
   }),
   setup(props) {
@@ -263,7 +270,7 @@ export default defineComponent({
       columns: props.columns, // 字段
       filtrationColumnKeys: [], // 过滤
       selectedRowKeys: [], // 选中项
-      size: props.size, // 表格大小
+      size: props.size // 表格大小
     });
 
     /// 默认操作
@@ -272,35 +279,35 @@ export default defineComponent({
         dataIndex: "operate",
         key: "operate",
         title: "操作",
-        fixed: "right",
+        fixed: "right"
       });
     }
 
     /// 为所有 column 新增默认 customRender 属性
-    state.columns.forEach((column) => {
+    state.columns.forEach(column => {
       column.slots = { customRender: column.dataIndex };
     });
 
     /// 过滤字段
     const filtrationColumns = [];
-    props.columns.forEach(function (item) {
+    props.columns.forEach(function(item) {
       filtrationColumns.push({ label: item.title, value: item.key });
       state.filtrationColumnKeys.push(item.key);
     });
 
     /// 过滤字段
-    const filtration = function (value) {
-      state.columns = props.columns.filter((item) => value.includes(item.key));
+    const filtration = function(value) {
+      state.columns = props.columns.filter(item => value.includes(item.key));
       state.filtrationColumnKeys = value;
     };
 
     /// 选中回调
-    const onSelectChange = (selectedRowKeys) => {
+    const onSelectChange = selectedRowKeys => {
       state.selectedRowKeys = selectedRowKeys;
     };
 
     /// 数据请求
-    const fetchData = async (pagination) => {
+    const fetchData = async pagination => {
       /// 分页处理
       if (pagination != undefined) {
         state.pagination.pageNum = pagination.current;
@@ -320,7 +327,7 @@ export default defineComponent({
     };
 
     /// 刷新方法
-    const reload = function () {
+    const reload = function() {
       fetchData();
     };
 
@@ -339,12 +346,12 @@ export default defineComponent({
     );
 
     /// 改变按钮尺寸
-    const changeSize = (target) => {
+    const changeSize = target => {
       state.size = target;
     };
 
     /// 表格打印
-    const print = function () {
+    const print = function() {
       let subOutputRankPrint = document.getElementById("pro-table");
       let newContent = subOutputRankPrint.innerHTML;
       let oldContent = document.body.innerHTML;
@@ -369,8 +376,8 @@ export default defineComponent({
       /// 改变大小
       changeSize,
       /// 打印
-      print,
+      print
     };
-  },
+  }
 });
 </script>

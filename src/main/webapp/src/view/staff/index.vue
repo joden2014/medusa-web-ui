@@ -22,54 +22,26 @@
       </a-col>
       <a-col flex="2" class="right-content">
         <a-card :bordered="false">
-          <a-row type="flex">
-            <a-col :span="12">
-              <a-button type="primary" size="large" @click="add(false)">
-                <template #icon>
-                  <PlusOutlined />
-                </template>
-                新建
-              </a-button>
+          <a-row type="flex" class="flex">
+            <a-col :span="24">
+              <pro-table
+                ref="tableRef"
+                :fetch="fetch"
+                :columns="columns"
+                :toolbar="toolbar"
+                :operate="operate"
+                :param="state.param"
+                rowKey="userId"
+                :pagination="pagination"
+                v-if="Object.keys(state.param).length"
+                :row-selection="{
+                  selectedRowKeys: state.selectedRowKeys,
+                  onChange: onSelectChange
+                }"
+              >
+                >
+              </pro-table>
             </a-col>
-          </a-row>
-          <a-row type="flex" class="flex" wrap>
-            <a-col :span="8" class="flex-item"
-              >部门编码：{{ state.recordEdit.organiseId }}</a-col
-            >
-            <a-col :span="8" class="flex-item"
-              >部门名称：{{ state.recordEdit.departmentName }}</a-col
-            >
-            <a-col :span="8" class="flex-item"
-              >部门全称：{{ state.recordEdit.departmentFullName }}</a-col
-            >
-            <a-col :span="8" class="flex-item"
-              >部门上级名称：{{ state.recordEdit.departmentFullName }}</a-col
-            >
-            <a-col :span="8" class="flex-item"
-              >是否启用：{{ state.recordEdit.status ? "是" : "否" }}</a-col
-            >
-            <a-col :span="8" class="flex-item"
-              >是否机构：{{ state.recordEdit.isOrganise ? "是" : "否" }}</a-col
-            >
-            <a-col :span="8" class="flex-item">创建时间：2021-09-22</a-col>
-            <a-col :span="8" class="flex-item">更新时间：2021-10-23</a-col>
-            <a-col :span="8" class="flex-item"
-              >排序：{{ state.recordEdit.sort }}</a-col
-            >
-            <a-col :span="8" class="flex-item"
-              >部门层级：{{ state.recordEdit.level }}</a-col
-            >
-            <!-- <a-col :span="8" class="flex-item">是否虚拟部门：是</a-col> -->
-          </a-row>
-          <a-row type="flex" class="flex border">
-            <a-col :span="24" class="flex-item">描述：-</a-col>
-          </a-row>
-          <h3 class="title">基础信息配置</h3>
-          <a-row type="flex" class="flex" wrap>
-            <a-col :span="8" class="flex-item">企业邮箱：-</a-col>
-            <a-col :span="16" class="flex-item">备案号：-</a-col>
-            <a-col :span="8" class="flex-item">客服电话：-</a-col>
-            <a-col :span="16" class="flex-item">企业网站：-</a-col>
           </a-row>
         </a-card>
       </a-col>
@@ -77,25 +49,48 @@
     <save
       :visible="state.visibleSave"
       @close="closeSave"
-      @reload="queryTreeList"
+      @reload="reloadTable"
       :record="state.recordEdit"
       :isEdit="state.isEdit"
+      :department="{
+        departmentId: state.param.departmentId,
+        departmentName: state.departmentName,
+        organiseId: state.organiseId
+      }"
       v-if="state.visibleSave"
     ></save>
+
+    <user-view
+      :visible="state.visibleView"
+      @close="closeView"
+      :record="state.recordView"
+      @cancel="handleCancel"
+      v-if="state.visibleView"
+    ></user-view>
+    <role
+      :visible="state.visibleRole"
+      v-if="state.visibleRole"
+      :record="state.recordRole"
+      :setUserRole="setUserRole"
+      @cancel="handleCancel"
+    />
   </page-layout>
 </template>
 
 <script>
+import role from "./modal/role/index.vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import save from "./modal/save";
-import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import userView from "./modal/view";
 import { defineComponent, ref, watch, reactive, createVNode } from "vue";
 import {
-  queryList,
-  getDepById,
-  deleteDep,
-} from "@/api/module/department";
-
+  queryUserList,
+  deleteUser,
+  batchDeleteUser,
+  setRoles
+} from "@/api/module/staff";
+import { queryList } from "@/api/module/department";
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -106,39 +101,165 @@ function getBase64(file) {
 }
 
 export default defineComponent({
-  components: { PlusOutlined, save },
+  components: { save, userView, role },
   setup() {
-    const previewVisible = ref(false);
+    const tableRef = ref();
     const previewImage = ref("");
     const fileList = ref([]);
     const searchValue = ref("");
     const autoExpandParent = ref(true);
     const gData = ref([]);
     const selectedKeys = ref([100]); // 选中
+    const converFormat = [
+      { label: "启用", value: true },
+      { label: "禁用", value: false }
+    ];
+    /// 列配置
+    const columns = ref([
+      {
+        dataIndex: "userName",
+        key: "userName",
+        title: "用户名称"
+      },
+      { dataIndex: "departmentName", key: "departmentName", title: "所属部门" },
+      {
+        dataIndex: "status",
+        key: "state",
+        title: "是否启用",
+        conver: converFormat
+      },
+      { dataIndex: "userTypeDesc", key: "userTypeDesc", title: "岗位" },
+      { dataIndex: "phone", key: "phone", title: "联系电话" }
+    ]);
+    /// 行操作
+    const operate = ref([
+      {
+        label: "详情",
+        event: function(record) {
+          (state.visibleView = true), (state.recordView = record);
+        }
+      },
+      {
+        label: "修改",
+        event: record => {
+          state.isEdit = true;
+          state.visibleSave = true;
+          state.recordEdit = record;
+        }
+      },
+      {
+        label: "设置角色",
+        event: function(record) {
+          state.visibleRole = true;
+          state.recordRole = record;
+        }
+      },
+      {
+        label: "删除",
+        event: function(record) {
+          removeUser(record.userId);
+        }
+      }
+    ]);
+    /// 工具栏
+    const toolbar = ref([
+      {
+        label: "新建用户",
+        event: function(record) {
+          state.visibleSave = true;
+          state.isEdit = false;
+        }
+      },
+      {
+        label: "批量删除用户",
+        event: function(record) {
+          batchRemoveUser();
+        }
+      }
+    ]);
+
+    const batchRemoveUser = () => {
+      const userIds = state.selectedRowKeys;
+      Modal.confirm({
+        title: "删除",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "你确定要删除吗？",
+        okText: "确定",
+        okType: "danger",
+        cancelText: "取消",
+        onOk: async () => {
+          await batchDeleteUser({ userIds });
+          message.success("删除成功！");
+          reloadTable();
+        }
+      });
+    };
+    const removeUser = userId => {
+      Modal.confirm({
+        title: "删除",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "你确定要删除吗？",
+        okText: "确定",
+        okType: "danger",
+        cancelText: "取消",
+        onOk: async () => {
+          await deleteUser({ userId });
+          reloadTable();
+        }
+      });
+    };
+    /// 选择操作
+    const onSelectChange = selectedRowKeys => {
+      state.selectedRowKeys = selectedRowKeys;
+    };
+    const setUserRole = async (userId, roleIds) => {
+      await setRoles({ userId, roleIds });
+      message.success("设置角色成功！");
+      state.visibleRole = false;
+    };
     let replaceFields = reactive({
       title: "departmentName",
       key: "organiseId",
       children: "childDepartments"
     });
+
+    const pagination = {
+      pageIndex: 1,
+      pageSize: 10
+    };
+    // 数据来源 [模拟]
+    const fetch = async param => {
+      const { total, data } = await queryUserList(param);
+      const result = data ?? [];
+      result.map(res => {
+        res.userTypeDesc = res.userType.desc;
+      });
+      return {
+        total,
+        data: result
+      };
+    };
+
+    const reloadTable = () => {
+      tableRef.value.reload();
+    };
+
     // 选中书节点触发
     const onSelect = (keys, data) => {
       selectedKeys.value = keys;
-      getDepDetail(data.node.eventKey);
+      state.param.departmentId = data.node.dataRef.departmentId;
+      state.departmentName = data.node.dataRef.departmentName;
+      state.organiseId = data.node.dataRef.organiseId;
     };
 
     watch(searchValue, value => {});
 
-    const handleCancel = () => {
-      previewVisible.value = false;
-    };
-
-    const handlePreview = async file => {
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
+    const handleCancel = type => {
+      if (type === "role") {
+        state.visibleRole = false;
+      } else {
+        state.visibleView = false;
       }
-
-      previewImage.value = file.url || file.preview;
-      previewVisible.value = true;
     };
 
     const handleChange = ({ fileList: newFileList }) => {
@@ -147,6 +268,9 @@ export default defineComponent({
 
     const queryTreeList = async () => {
       const data = await queryList({ departmentId: 100 });
+      state.param.departmentId = 100;
+      state.departmentName = data.data.departmentName;
+      state.organiseId = data.data.organiseId;
       gData.value = [data.data];
     };
 
@@ -155,58 +279,45 @@ export default defineComponent({
       param: {},
       visibleSave: false,
       recordEdit: {},
-      isEdit: false
+      recordView: {},
+      recordRole: {},
+      isEdit: false,
+      visibleView: false,
+      departmentName: null,
+      organiseId: null,
+      visibleRole: false
     });
     queryTreeList();
 
-    // 获取详情
-    const getDepDetail = async departmentId => {
-      const { data } = await getDepById({ departmentId });
-      state.recordEdit = data;
-    };
-    getDepDetail(selectedKeys.value[0]);
-
-    const add = type => {
-      state.isEdit = type;
-      state.visibleSave = true;
-    };
-
-    const remove = async departmentId => {
-      Modal.confirm({
-        title: "删除部门",
-        icon: createVNode(ExclamationCircleOutlined),
-        content: "你确定要删除吗？",
-        okText: "确定",
-        okType: "danger",
-        cancelText: "取消",
-        onOk: async () => {
-          await deleteDep({ departmentId });
-          queryTreeList();
-        }
-      });
-    };
     const closeSave = function() {
       state.visibleSave = false;
     };
+
     return {
       searchValue,
       autoExpandParent,
       gData,
       onSelect,
       fileList,
-      previewVisible,
       previewImage,
       handleCancel,
-      handlePreview,
       handleChange,
       queryTreeList,
       replaceFields,
       state,
-      getDepDetail,
       selectedKeys,
-      add,
       closeSave,
-      remove
+      columns,
+      toolbar,
+      operate,
+      pagination,
+      fetch,
+      reloadTable,
+      onSelectChange,
+      tableRef,
+      removeUser,
+      batchRemoveUser,
+      setUserRole
     };
   }
 });

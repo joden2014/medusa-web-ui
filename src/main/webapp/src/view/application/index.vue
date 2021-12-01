@@ -46,7 +46,12 @@ import save from "./modal/save";
 import menu from "./modal/menu.vue"; // 菜单创建修改
 import { message, modal } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { queryList, remove, getAppMenu } from "@/api/module/application";
+import {
+  queryList,
+  remove,
+  getAppMenu,
+  switchStatus
+} from "@/api/module/application";
 import { reactive, createVNode, ref } from "vue";
 
 const removeKey = "remove";
@@ -55,15 +60,28 @@ const removeBatchKey = "removeBatch";
 export default {
   components: {
     save,
-    myMenu: menu,
+    myMenu: menu
   },
   setup() {
     const tableRef = ref();
-
+    const switchFormat = {
+      yes: true,
+      no: false,
+      checkedStr: "开启",
+      unCheckedStr: "禁用",
+      event: async function(value, record) {
+        const data = await switchStatus({
+          applicationId: record.applicationId,
+          status: record.status
+        });
+        record.status = !record.status;
+        return value;
+      }
+    };
     /// 开关
     const converFormat = [
       { label: "生效", value: true },
-      { label: "禁用", value: false },
+      { label: "禁用", value: false }
     ];
 
     /// 列配置
@@ -72,39 +90,40 @@ export default {
       {
         dataIndex: "applicationName",
         key: "applicationName",
-        title: "应用名称",
+        title: "应用名称"
       },
       { dataIndex: "description", key: "description", title: "描述" },
       {
         dataIndex: "applicationTypeDesc",
         key: "applicationTypeDesc",
-        title: "应用系统类型",
+        title: "应用系统类型"
       },
       {
         dataIndex: "status",
         key: "state",
         title: "状态",
         conver: converFormat,
+        switch: switchFormat
       },
       { dataIndex: "startTime", key: "startTime", title: "生效时间" },
-      { dataIndex: "endTime", key: "endTime", title: "截止时间" },
+      { dataIndex: "endTime", key: "endTime", title: "截止时间" }
     ];
 
     /// 数据来源 [模拟]
-    const fetch = async (param) => {
+    const fetch = async param => {
       const { total, data } = await queryList(param);
       const result = data ?? [];
-      result.map((res) => {
+      result.map(res => {
         res.applicationTypeDesc = res.applicationType.desc;
       });
       return {
         total,
-        data: result,
+        data: result
       };
     };
 
     /// 删除配置
-    const removeMethod = (record) => {
+    const removeMethod = record => {
       modal.confirm({
         title: "您是否确定要删除此应用?",
         icon: createVNode(ExclamationCircleOutlined),
@@ -112,7 +131,7 @@ export default {
         cancelText: "取消",
         onOk() {
           message.loading({ content: "提交中...", key: removeKey });
-          remove(record).then((response) => {
+          remove(record).then(response => {
             if (response.success) {
               message
                 .success({ content: "删除成功", key: removeKey, duration: 1 })
@@ -121,11 +140,11 @@ export default {
               message.error({
                 content: "删除失败",
                 key: removeKey,
-                duration: 1,
+                duration: 1
               });
             }
           });
-        },
+        }
       });
     };
 
@@ -133,38 +152,39 @@ export default {
     const toolbar = [
       {
         label: "新增",
-        event: function () {
+        event: function() {
+          state.recordEdit = {};
           state.visibleSave = true;
-        },
-      },
+        }
+      }
     ];
 
     /// 行操作
     const operate = [
       {
         label: "修改",
-        event: function (record) {
+        event: function(record) {
           (state.visibleSave = true), (state.recordEdit = record);
-        },
+        }
       },
       {
         label: "菜单",
-        event: (record) => {
+        event: record => {
           (state.visibleMenu = true), (state.recordMenu = record);
-        },
+        }
       },
       {
         label: "删除",
-        event: function (record) {
+        event: function(record) {
           removeMethod(record);
-        },
-      },
+        }
+      }
     ];
 
     /// 分页参数
     const pagination = {
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 10
     };
 
     const reloadTable = () => {
@@ -178,7 +198,7 @@ export default {
       visibleEdit: false,
       visibleMenu: false,
       recordEdit: {},
-      recordMenu: {},
+      recordMenu: {}
     });
 
     const searchParam = [
@@ -190,35 +210,29 @@ export default {
         options: [
           { value: null, text: "全部" },
           { value: true, text: "生效" },
-          { value: false, text: "失效" },
-        ],
-      },
+          { value: false, text: "失效" }
+        ]
+      }
     ];
 
-    const search = function (value) {
+    const search = function(value) {
       state.param = value;
     };
 
-    const closeSave = function () {
+    const closeSave = function() {
       state.visibleSave = false;
     };
 
-    const closeEdit = function () {
+    const closeEdit = function() {
       state.visibleEdit = false;
     };
 
-    const closeMenu = function () {
+    const closeMenu = function() {
       state.visibleMenu = false;
     };
 
-    const onSelectChange = (selectedRowKeys) => {
+    const onSelectChange = selectedRowKeys => {
       state.selectedRowKeys = selectedRowKeys;
-    };
-
-    const getAPPMenuData = (applicationId) => {
-      getAppMenu({ applicationId }).then((res) => {
-        console.log(res);
-      });
     };
     return {
       state,
@@ -237,9 +251,8 @@ export default {
 
       onSelectChange,
       tableRef,
-      reloadTable,
-      getAPPMenuData,
+      reloadTable
     };
-  },
+  }
 };
 </script>

@@ -36,9 +36,13 @@
                 <a-col v-if="state.recordEdit.isOrganise">
                   <div class="upload-icon">
                     <a-upload
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      :action="uploadLogoUrl"
                       list-type="picture-card"
                       v-model:file-list="fileList"
+                      :data="{
+                        departmentId: state.recordEdit.departmentId
+                      }"
+                      :headers="headers"
                       @preview="handlePreview"
                     >
                       <div v-if="fileList.length < 1" class="upload-file">
@@ -135,7 +139,12 @@ import { message, Modal } from "ant-design-vue";
 import save from "./modal/save";
 import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { defineComponent, ref, watch, reactive, createVNode } from "vue";
-import { queryList, getDepById, deleteDep } from "@/api/module/department";
+import {
+  queryList,
+  getDepById,
+  deleteDep,
+  uploadLogo
+} from "@/api/module/department";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -149,6 +158,7 @@ function getBase64(file) {
 export default defineComponent({
   components: { PlusOutlined, save },
   setup() {
+    const uploadLogoUrl = ref(uploadLogo);
     const previewVisible = ref(false);
     const previewImage = ref("");
     const fileList = ref([]);
@@ -156,6 +166,10 @@ export default defineComponent({
     const autoExpandParent = ref(true);
     const gData = ref([]);
     const selectedKeys = ref(["100"]); // 选中
+    const token = localStorage.getItem("token");
+    const headers = ref({
+      Authorization: `Bearer ${token}`
+    });
     let replaceFields = reactive({
       title: "departmentName",
       key: "departmentId",
@@ -265,7 +279,9 @@ export default defineComponent({
       add,
       closeSave,
       remove,
-      reload
+      reload,
+      uploadLogoUrl,
+      headers
     };
   }
 });

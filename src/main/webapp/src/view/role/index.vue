@@ -40,8 +40,8 @@ import info from './modal/info';
 import { message , modal} from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { page, remove, removeBatch } from "@/api/module/role";
-import { reactive, createVNode, ref } from 'vue';
-
+import { reactive, createVNode, ref, computed } from 'vue';
+import { useStore } from "vuex";
 const removeKey = "remove";
 const removeBatchKey = "removeBatch";
 
@@ -55,7 +55,8 @@ export default {
   setup() {
 
     const tableRef = ref();
-
+    const { getters } = useStore();
+    const userInfo = computed(() => JSON.parse(getters.userInfo)); // 当前登录人信息
     const switchFormat = { yes: true, no: false, event: function(value,record){
       record.enable = !record.enable;
       return value;
@@ -137,7 +138,7 @@ export default {
     ];
 
     /// 分页参数
-    const pagination = { pageNum: 1, pageSize: 10 };
+    const pagination = { pageIndex: 1, pageSize: 10 };
 
     /// 外置参数
     const state = reactive({
@@ -196,7 +197,7 @@ export default {
       pagination, 
       searchParam, 
       onSelectChange,
-
+      userInfo,
       closeSave,
       closeEdit,
       closeGive,

@@ -52,7 +52,13 @@
           >
         </a-select>
       </a-form-item>
-
+      <a-form-item label="状态" name="status">
+        <a-switch
+          v-model:checked="formState.status"
+          checked-children="开启"
+          un-checked-children="禁用"
+        />
+      </a-form-item>
       <a-form-item ref="sort" label="排序" name="sort">
         <a-input v-model:value="formState.sort" autocomplete="off" />
       </a-form-item>
@@ -106,18 +112,18 @@ function getBase64(img, callback) {
 export default defineComponent({
   props: {
     visible: {
-      type: Boolean,
+      type: Boolean
     },
     record: {
-      type: Object,
-    },
+      type: Object
+    }
   },
   emit: ["close"],
   setup(props, context) {
     const fileList = ref([]);
     const loading = ref(false);
     const imageUrl = ref("");
-    const handleChange = (info) => {
+    const handleChange = info => {
       if (info.file.status === "uploading") {
         loading.value = true;
         return;
@@ -125,7 +131,7 @@ export default defineComponent({
 
       if (info.file.status === "done") {
         // Get this url from response in real world.
-        getBase64(info.file.originFileObj, (base64Url) => {
+        getBase64(info.file.originFileObj, base64Url => {
           imageUrl.value = base64Url;
           loading.value = false;
         });
@@ -137,7 +143,7 @@ export default defineComponent({
       }
     };
 
-    const beforeUpload = (file) => {
+    const beforeUpload = file => {
       const isJpgOrPng =
         file.type === "image/jpeg" || file.type === "image/png";
 
@@ -159,15 +165,15 @@ export default defineComponent({
     const saveKey = "save";
     const formRules = {
       applicationName: [
-        { required: true, message: "请输入应用名称", trigger: "blur" },
+        { required: true, message: "请输入应用名称", trigger: "blur" }
       ],
       description: [
-        { required: true, message: "请输入应用描述", trigger: "blur" },
+        { required: true, message: "请输入应用描述", trigger: "blur" }
       ],
       applicationType: [
-        { required: true, message: "请输入应用类型", trigger: "change" },
+        { required: true, message: "请输入应用类型", trigger: "change" }
       ],
-      sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
+      sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
     };
 
     const formState = reactive({
@@ -178,14 +184,15 @@ export default defineComponent({
       startTime: null,
       endTime: null,
       linkUrl: null,
-      applicationCode: null, // 应用编码
+      status: false,
+      applicationCode: null // 应用编码
     });
     const list = [
       { text: "项目级", value: "1" },
       { text: "公司级", value: "2" },
-      { text: "集团级", value: "3" },
+      { text: "集团级", value: "3" }
     ];
-    const submit = (e) => {
+    const submit = e => {
       message.loading({ content: "提交中...", key: saveKey });
       formRef.value
         .validate()
@@ -205,13 +212,13 @@ export default defineComponent({
             addAppSubmit(params);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log("error", error);
         });
     };
 
-    const addAppSubmit = (params) => {
-      addApp(toRaw(params)).then((response) => {
+    const addAppSubmit = params => {
+      addApp(toRaw(params)).then(response => {
         if (response.success) {
           message
             .success({ content: "保存成功", key: saveKey, duration: 1 })
@@ -229,10 +236,10 @@ export default defineComponent({
       });
     };
 
-    const updateAppSubmit = (params) => {
+    const updateAppSubmit = params => {
       updateApp(
         toRaw({ ...params, applicationId: props.record.applicationId })
-      ).then((response) => {
+      ).then(response => {
         if (response.success) {
           message
             .success({ content: "保存成功", key: saveKey, duration: 1 })
@@ -250,14 +257,14 @@ export default defineComponent({
       });
     };
 
-    const cancel = (e) => {
+    const cancel = e => {
       formRef.value.resetFields();
       context.emit("close", false);
     };
 
     const getDetail = async () => {
       const _data = await getAppById({
-        applicationId: props.record.applicationId,
+        applicationId: props.record.applicationId
       });
       for (const key in formState) {
         if (key === "applicationType") {
@@ -269,10 +276,12 @@ export default defineComponent({
         ) {
           formState.date = [
             moment(_data.data["startTime"]),
-            moment(_data.data["endTime"]),
+            moment(_data.data["endTime"])
           ];
-        } else {
+        } else if (key === "sort") {
           formState[key] = _data.data[key] + "";
+        } else {
+          formState[key] = _data.data[key];
         }
       }
     };
@@ -296,8 +305,8 @@ export default defineComponent({
       imageUrl,
       getDetail,
       addAppSubmit,
-      updateAppSubmit,
+      updateAppSubmit
     };
-  },
+  }
 });
 </script>

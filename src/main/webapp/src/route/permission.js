@@ -12,21 +12,20 @@ export const generateRoute = menus => {
       icon,
       childMenus = [],
       menuPath,
-      hidden = false,
+      display = false,
       menuName,
-      i18n,
-      id,
+      applicationId,
       redirect,
-      pathName
+      menuUrl
     } = menu;
     const currentMenu = {
-      path: menuPath ?? "",
-      component: pathName ?? null,
-      hidden,
+      path: menuUrl ?? "",
+      component: menuPath ?? null,
+      hidden: display,
       parent,
       redirect,
-      id,
-      meta: { title: menuName, i18n, icon },
+      id: applicationId,
+      meta: { title: menuName, icon },
       children: childMenus.length === 0 ? [] : generateRoute(childMenus)
     };
     if (childMenus.length <= 0) {
@@ -56,7 +55,7 @@ export const setUserRouteComponent = routes => {
 };
 
 const setDocumentTitle = title => {
-  document.title = `基建RGAC - ${title}`;
+  document.title = `通用基础建设 - ${title}`;
 };
 
 /**

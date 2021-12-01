@@ -5,6 +5,7 @@ import {
   logout,
   userInfo,
   refreshToken,
+  getUserType
 } from "@/api/module/user";
 import { generateRoute, generatePower } from "@/route/permission";
 import { message } from "ant-design-vue";
@@ -41,8 +42,13 @@ const mutations = {
     }
   },
   SET_USER_INFO(state, userInfo) {
-    state.userInfo = userInfo;
-    localStorage.setItem("user_info", JSON.stringify(userInfo));
+    if (userInfo) {
+      state.userInfo = userInfo;
+      localStorage.setItem("user_info", JSON.stringify(userInfo));
+    }else{
+      state.userInfo = null;
+      localStorage.removeItem("user_info");
+    }
   },
   SET_USER_ROUTE(state, menuList) {
     if (menuList && menuList.length === 0) {
@@ -103,6 +109,7 @@ const actions = {
     message.success("退出成功", 0.5).then(function () {
       commit("SET_USER_TOKEN");
       commit("SET_USER_ROUTE");
+      commit("SET_USER_INFO");
       window.location.reload();
     });
     return Promise.resolve();
@@ -121,14 +128,15 @@ const actions = {
   },
 
   async addPower({ commit }) {
-    const { userId } = JSON.parse(state.userInfo);
+    const { userId } = Object.prototype.toString.call(state.userInfo) === '[object Object]' ? state.userInfo : JSON.parse(state.userInfo);
     const { data } = await power({ userId });
     commit("SET_USER_POWER", generatePower(data));
   },
   async getUserInfo({ commit }) {
     const { data } = await userInfo();
-    commit("SET_USER_INFO", data);
-  },
+    const isAdmin = await getUserType({ userId: data.userId })
+    commit("SET_USER_INFO", {...data, isAdmin: isAdmin.data});
+  }
 };
 export default {
   namespaced: true,

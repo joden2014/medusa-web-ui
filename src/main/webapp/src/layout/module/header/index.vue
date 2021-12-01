@@ -29,7 +29,11 @@
     <!-- 综合菜单 -->
     <div v-if="layout == 'layout-comp'" class="comp-menu">
       <template :key="index" v-for="(route, index) in routes">
-        <div @click="changeMenu(route)" class="menu-item" :class="[active === route.path ? 'is-active' : '']">
+        <div
+          @click="changeMenu(route)"
+          class="menu-item"
+          :class="[active === route.path ? 'is-active' : '']"
+        >
           <span>{{ route.meta.title }}</span>
         </div>
       </template>
@@ -72,6 +76,7 @@
           </a-menu>
         </template>
       </a-dropdown> -->
+      <span>{{ userInfo.loginName }}</span>
       <a-dropdown class="avatar-item" placement="bottomCenter">
         <a-avatar
           src="https://portrait.gitee.com/uploads/avatars/user/1611/4835367_Jmysy_1578975358.png"
@@ -88,6 +93,7 @@
           </a-menu>
         </template>
       </a-dropdown>
+
       <div v-if="!isMobile" class="menu-item" @click="setting()">
         <MoreOutlined />
       </div>
@@ -111,7 +117,7 @@ import {
   ReloadOutlined,
   // GlobalOutlined,
   BellOutlined,
-  LoadingOutlined,
+  LoadingOutlined
 } from "@ant-design/icons-vue";
 import { loadLocaleMessages } from "@/locale/index.js";
 export default {
@@ -126,7 +132,7 @@ export default {
     Menu,
     Logo,
     BellOutlined,
-    LoadingOutlined,
+    LoadingOutlined
   },
   setup() {
     const { getters, commit, dispatch } = useStore();
@@ -140,12 +146,16 @@ export default {
     const active = ref($route.matched[0].path);
     const isMobile = computed(() => getters.isMobile);
     const routerActive = computed(() => getters.routerActive);
+    const userInfo = computed(() => JSON.parse(getters.userInfo));
 
-    watch(computed(() => $route.fullPath), () => {
+    watch(
+      computed(() => $route.fullPath),
+      () => {
         active.value = $route.matched[0].path;
-    });
-    
-    const routes = computed(() => getters.menu).value.filter((r) => !r.hidden);
+      }
+    );
+
+    const routes = computed(() => getters.menu).value.filter(r => !r.hidden);
 
     const refresh = async () => {
       commit("app/UPDATE_ROUTER_ACTIVE");
@@ -154,28 +164,28 @@ export default {
       }, 500);
     };
 
-    const changeMenu = (targetRoute) => {
-        let { children, path } = targetRoute;
-        while (children && children[0]) {
-          path = children[0].path;
-          children = children[0].children;
-        }
-        router.push(path);
-        // menus.value = getters.menu.find((r) => r.path === $route.matched[0].path).children;
-    }
+    const changeMenu = targetRoute => {
+      let { children, path } = targetRoute;
+      while (children && children[0]) {
+        path = children[0].path;
+        children = children[0].children;
+      }
+      router.push(path);
+      // menus.value = getters.menu.find((r) => r.path === $route.matched[0].path).children;
+    };
 
-    const logout = async (e) => {
+    const logout = async e => {
       await dispatch("user/logout");
     };
 
-    const go = async (e) => {
-      router.push("/account/center")
-    }
+    const go = async e => {
+      router.push("/profile/index");
+    };
 
     const store = useStore();
     const defaultLang = computed(() => store.state.app.language);
     const selectedKeys = ref([unref(defaultLang)]);
-    
+
     // const setLanguage = async ({ key }) => {
     //   selectedKeys.value = [key];
     //   await loadLocaleMessages(i18n, key);
@@ -201,8 +211,9 @@ export default {
       // setLanguage,
       selectedKeys,
       go,
+      userInfo
     };
-  },
+  }
 };
 </script>
 <style lang="less" scoped>

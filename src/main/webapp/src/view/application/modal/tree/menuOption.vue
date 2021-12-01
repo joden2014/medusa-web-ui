@@ -29,11 +29,31 @@
       </a-form-item>
 
       <a-form-item ref="menuPath" label="菜单路径" name="menuPath">
-        <a-input v-model:value="formState.menuPath" autocomplete="off" />
+        <a-input
+          v-model:value="formState.menuPath"
+          autocomplete="off"
+          placeholder="前端路由文件名，列如：user"
+        />
       </a-form-item>
 
       <a-form-item ref="menuUrl" label="菜单URL" name="menuUrl">
-        <a-input v-model:value="formState.menuUrl" autocomplete="off" />
+        <a-input
+          v-model:value="formState.menuUrl"
+          autocomplete="off"
+          placeholder="前端路由路径，列如：/user"
+        />
+      </a-form-item>
+
+      <a-form-item label="是否显示" name="display">
+        <a-switch
+          v-model:checked="formState.display"
+          checked-children="隐藏"
+          un-checked-children="显示"
+        />
+      </a-form-item>
+
+      <a-form-item label="图标" name="icon">
+        <p-icon-picker v-model:value="formState.icon"></p-icon-picker>
       </a-form-item>
 
       <a-form-item ref="_perms" label="权限标识" name="_perms">
@@ -75,16 +95,16 @@ import { message } from "ant-design-vue";
 export default defineComponent({
   props: {
     visible: {
-      type: Boolean,
+      type: Boolean
     },
     menuType: {
       type: String,
-      default: "add",
+      default: "add"
     },
     record: {
       type: Object,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   emit: ["close"],
   setup(props, context) {
@@ -94,32 +114,32 @@ export default defineComponent({
       { text: "query", value: "query" },
       { text: "add", value: "add" },
       { text: "edit", value: "edit" },
-      { text: "del", value: "del" },
+      { text: "del", value: "del" }
     ]);
 
     const formRules = {
       menuName: [
-        { required: true, message: "请输入菜单名称", trigger: "blur" },
+        { required: true, message: "请输入菜单名称", trigger: "blur" }
       ],
       menuPath: [
-        { required: true, message: "请输入菜单路径", trigger: "blur" },
+        { required: true, message: "请输入菜单路径", trigger: "blur" }
       ],
       menuUrl: [{ required: true, message: "请输入菜单URL", trigger: "blur" }],
       menuType: [
         {
           required: props.menuType === "add",
           message: "请选择菜单类型",
-          trigger: "change",
-        },
+          trigger: "change"
+        }
       ],
       _perms: [
         {
           required: true,
           message: "请选择权限标识",
           trigger: "change",
-          type: "array",
-        },
-      ],
+          type: "array"
+        }
+      ]
     };
 
     const formState = reactive({
@@ -129,14 +149,16 @@ export default defineComponent({
       menuUrl: "",
       menuType: null,
       perms: "",
+      display: false,
+      icon: null
     });
     const list = ref([
       { text: "系统菜单", value: "1" },
       { text: "业务菜单", value: "2" },
       { text: "目录", value: "3" },
-      { text: "按钮", value: "4" },
+      { text: "按钮", value: "4" }
     ]);
-    const submit = (e) => {
+    const submit = e => {
       formRef.value
         .validate()
         .then(async () => {
@@ -148,23 +170,23 @@ export default defineComponent({
           }
           context.emit("handle", {
             type: props.menuType,
-            data: formState,
+            data: formState
           });
           cancel();
         })
-        .catch((error) => {
+        .catch(error => {
           console.log("error", error);
         });
     };
 
-    const cancel = (e) => {
+    const cancel = e => {
       formRef.value.resetFields();
       context.emit("close", false);
     };
 
     const getDetail = async () => {
       const _data = await getMenuById({
-        menuId: props.record.menuId,
+        menuId: props.record.menuId
       });
       for (const key in formState) {
         if (key === "perms") {
@@ -196,8 +218,8 @@ export default defineComponent({
       wrapperCol: { span: 18 },
       roles,
       getDetail,
-      updateMenuHttp,
+      updateMenuHttp
     };
-  },
+  }
 });
 </script>

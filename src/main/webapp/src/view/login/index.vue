@@ -10,8 +10,8 @@
       >
         <a-form-item>
           <img class="logo" src="@/assets/image/logo.png" />
-          <div class="head">数字化中心</div>
-          <div class="desc">基建RBAC平台</div>
+          <div class="head">Medusa Admin</div>
+          <div class="desc">打造通用基础建设，构建数字化技术中台</div>
         </a-form-item>
         <a-form-item>
           <a-input
@@ -92,6 +92,7 @@ export default {
           await router.push("/");
         })
         .catch((error) => {
+          debugger
           notification['error']({
             message: "登录失败",
             description: error,
