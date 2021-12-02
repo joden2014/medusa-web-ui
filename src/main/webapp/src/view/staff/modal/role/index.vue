@@ -115,10 +115,8 @@ export default {
     };
 
     const submit = e => {
-      if (state.selectedRowKeys.length) {
-        message.loading({ content: "提交中..." });
-        props.setUserRole(props.record.userId, state.selectedRowKeys);
-      }
+      message.loading({ content: "提交中..." });
+      props.setUserRole(props.record.userId, state.selectedRowKeys);
     };
     const cancel = e => {
       state.selectedRowKeys = [];
