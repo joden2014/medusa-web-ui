@@ -80,8 +80,8 @@ const menu = [
       },
       {
         parent: "1",
-        menuUrl: "/digital/works",
-        menuPath: "works",
+        menuUrl: "/digital/post",
+        menuPath: "post",
         type: "menu",
         icon: "DesktopOutlined",
         menuName: "岗位管理",

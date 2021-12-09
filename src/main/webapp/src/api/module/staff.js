@@ -9,7 +9,8 @@ const Api = {
   updateUser: "/api/user/update",
   deleteUser: "/api/user/remove/",
   deleteUsers: "/api/user/delete", // 批量删除用户
-  setRoles: "/api/user/role" // 设置角色
+  setRoles: "/api/user/role", // 设置角色
+  switchStatus: "/api/user/update/status"
 };
 /** 获取部门列表树 */
 export const queryUserList = params => {
@@ -74,5 +75,13 @@ export const setRoles = data => {
     headers: {
       "Content-Type": "application/json;charset=UTF-8"
     }
+  });
+};
+
+export const switchStatus = (data) => {
+  return request.request({
+    url: Api.switchStatus,
+    data,
+    method: "put"
   });
 };

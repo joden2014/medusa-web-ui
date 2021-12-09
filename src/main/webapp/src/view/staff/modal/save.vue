@@ -50,6 +50,10 @@
         </a-select>
       </a-form-item>
 
+      <a-form-item ref="phone" label="联系电话" name="phone">
+        <a-input v-model:value="formState.phone" autocomplete="off" />
+      </a-form-item>
+      
       <a-form-item label="权限部门" name="privilegeDepartmentId">
         <a-tree-select
           v-model:value="formState.privilegeDepartmentId"
@@ -62,9 +66,6 @@
           tree-default-expand-all
         >
         </a-tree-select>
-      </a-form-item>
-      <a-form-item ref="phone" label="联系电话" name="phone">
-        <a-input v-model:value="formState.phone" autocomplete="off" />
       </a-form-item>
 
       <a-form-item ref="address" label="地址" name="address">
@@ -192,7 +193,7 @@ export default defineComponent({
       loginPassword: "123456",
       organiseId: props.department.organiseId, // 机构编码
       phone: "",
-      privilegeDepartmentId: props.department.organiseId, // 权限部门编码
+      privilegeDepartmentId: props.department.departmentId, // 权限部门编码
       sex: 0, // 性别
       status: true, // 用户状态
       userName: "", // 用户名称
@@ -271,7 +272,7 @@ export default defineComponent({
         if (key === "userType") {
           formState[key] = _data[key].value;
         } else if (key === "sex") {
-          formState[key] = _data[key].value + '';
+          formState[key] = _data[key].value + "";
         } else {
           formState[key] = _data[key];
         }

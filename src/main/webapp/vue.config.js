@@ -16,7 +16,7 @@ module.exports = {
     port: 8088, // 端口
     proxy: {
       "/digital": {
-        target: "http://192.168.1.211:5001/digital",
+        target: "http://192.168.1.210:5001/digital",
         changeOrigin: "true",
         logLevel: "debug",
         pathRewrite: {

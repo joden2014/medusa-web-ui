@@ -22,6 +22,7 @@
       </a-col>
       <a-col flex="2" class="right-content">
         <a-card :bordered="false">
+          <h3>当前部门：{{ state.departmentName }}</h3>
           <a-row type="flex" class="flex">
             <a-col :span="24">
               <pro-table
@@ -88,7 +89,8 @@ import {
   queryUserList,
   deleteUser,
   batchDeleteUser,
-  setRoles
+  setRoles,
+  switchStatus
 } from "@/api/module/staff";
 import { queryList } from "@/api/module/department";
 function getBase64(file) {
@@ -114,6 +116,20 @@ export default defineComponent({
       { label: "启用", value: true },
       { label: "禁用", value: false }
     ];
+    const switchFormat = {
+      yes: true,
+      no: false,
+      checkedStr: "开启",
+      unCheckedStr: "禁用",
+      event: async function(value, record) {
+        await switchStatus({
+          userId: record.userId,
+          status: !record.status
+        });
+        record.status = !record.status;
+        return value;
+      }
+    };
     /// 列配置
     const columns = ref([
       {
@@ -121,14 +137,14 @@ export default defineComponent({
         key: "userName",
         title: "用户名称"
       },
-      { dataIndex: "departmentName", key: "departmentName", title: "所属部门" },
       {
         dataIndex: "status",
         key: "state",
         title: "是否启用",
-        conver: converFormat
+        conver: converFormat,
+        switch: switchFormat
       },
-      { dataIndex: "userTypeDesc", key: "userTypeDesc", title: "岗位" },
+      { dataIndex: "userTypeDesc", key: "userTypeDesc", title: "用户类型" },
       { dataIndex: "phone", key: "phone", title: "联系电话" }
     ]);
     /// 行操作
@@ -136,7 +152,10 @@ export default defineComponent({
       {
         label: "详情",
         event: function(record) {
-          (state.visibleView = true), (state.recordView = record);
+          const departmentName = state.departmentName;
+          record.departmentName = departmentName;         
+          state.visibleView = true;
+          state.recordView = record;
         }
       },
       {
@@ -317,7 +336,8 @@ export default defineComponent({
       tableRef,
       removeUser,
       batchRemoveUser,
-      setUserRole
+      setUserRole,
+      switchFormat
     };
   }
 });

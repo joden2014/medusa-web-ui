@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :visible="visible"
-    title="角色列表"
+    title="用户列表"
     cancelText="取消"
     okText="提交"
     width="40%"
@@ -24,7 +24,7 @@
             :columns="columns"
             :param="state.param"
             :pagination="pagination"
-            rowKey="roleId"
+            rowKey="userId"
             :row-selection="{
               selectedRowKeys: state.selectedRowKeys,
               onChange: onSelectChange
@@ -37,10 +37,11 @@
   </a-modal>
 </template>
 <script>
+import { queryUserList } from "@/api/module/staff";
+import { getRoleUserList } from "@/api/module/role";
 import { message } from "ant-design-vue";
-import { page, getUserRoleList } from "@/api/module/role";
-import { reactive, createVNode, ref } from "vue";
-
+import { reactive, ref, computed } from "vue";
+import { useStore } from "vuex";
 export default {
   props: {
     visible: {
@@ -49,25 +50,26 @@ export default {
     record: {
       type: Object
     },
-    setUserRole: {
+    setUsers: {
       type: Function
     }
   },
   setup(props, context) {
     const tableRef = ref();
-
+    const { getters } = useStore();
+    const userInfo = computed(() => JSON.parse(getters.userInfo)); // 当前登录人信息
     const columns = [
-      { dataIndex: "roleTypeDesc", key: "roleTypeDesc", title: "角色类型" },
-      { dataIndex: "roleName", key: "roleName", title: "角色名称" }
+      { dataIndex: "userTypeDesc", key: "roleTypeDesc", title: "用户类型" },
+      { dataIndex: "userName", key: "userName", title: "用户名称" }
     ];
 
     /// 数据来源
     const fetch = async param => {
-      var response = await page(param);
+      var response = await queryUserList(param);
       const data = response.data;
       data.map(res => {
-        if (res.roleType) {
-          res.roleTypeDesc = res.roleType.desc;
+        if (res.userType) {
+          res.userTypeDesc = res.userType.desc;
         }
       });
       return {
@@ -88,41 +90,41 @@ export default {
     /// 查询参数
     const searchParam = [
       {
-        key: "roleType",
-        type: "select",
-        label: "应用状态",
-        options: [
-          { value: "S", text: "系统角色" },
-          { value: "B", text: "业务角色" }
-        ]
+        key: "userName",
+        type: "input",
+        label: "用户名称"
       }
     ];
 
     /// 查询操作
     const search = function(value) {
       state.param = value;
-      tableRef.value.reload();
     };
 
-    const getRoleList = async () => {
-      const userId = props.record.userId;
-      const { data } = await getUserRoleList({ userId });
-      const role = data.map(res => res.roleId);
-      state.selectedRowKeys = role;
-    };
     const onSelectChange = selectedRowKeys => {
       state.selectedRowKeys = selectedRowKeys;
     };
 
     const submit = e => {
+      const roleId = props.record.roleId;
       message.loading({ content: "提交中..." });
-      props.setUserRole(props.record.userId, state.selectedRowKeys);
+      props.setUsers(roleId, state.selectedRowKeys);
     };
     const cancel = e => {
       state.selectedRowKeys = [];
-      context.emit("cancel", "role");
+      context.emit("close");
     };
-    getRoleList();
+
+    const getRoleUserListData = async () => {
+      const data = await getRoleUserList({
+        ...pagination,
+        roleId: props.record.roleId,
+        userId: userInfo.value.userId
+      });
+      console.log(data);
+    };
+
+    getRoleUserListData();
     return {
       state,
       fetch,
@@ -134,8 +136,7 @@ export default {
       searchParam,
       onSelectChange,
       tableRef,
-      submit,
-      getRoleList
+      submit
     };
   }
 };

@@ -70,9 +70,9 @@ export default {
       checkedStr: "开启",
       unCheckedStr: "禁用",
       event: async function(value, record) {
-        const data = await switchStatus({
+        await switchStatus({
           applicationId: record.applicationId,
-          status: record.status
+          status: !record.status
         });
         record.status = !record.status;
         return value;

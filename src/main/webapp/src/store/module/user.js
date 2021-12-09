@@ -24,7 +24,7 @@ const state = {
     : [],
   userPowers: localStorage.getItem("user_powers")
     ? localStorage.getItem("user_powers")
-    : [],
+    : []
 };
 
 const mutations = {
@@ -43,9 +43,9 @@ const mutations = {
   },
   SET_USER_INFO(state, userInfo) {
     if (userInfo) {
-      state.userInfo = userInfo;
+      state.userInfo = JSON.stringify(userInfo);
       localStorage.setItem("user_info", JSON.stringify(userInfo));
-    }else{
+    } else {
       state.userInfo = null;
       localStorage.removeItem("user_info");
     }
@@ -69,19 +69,19 @@ const mutations = {
       state.userPowers = finalPower;
       localStorage.setItem("user_powers", JSON.stringify(finalPower));
     }
-  },
+  }
 };
 
 const actions = {
   async refreshToken({ commit }) {
     const params = {
-      refreshToken: state.tokenKey,
+      refreshToken: state.tokenKey
     };
     const { code, message, data } = await refreshToken(params);
     if (code === "200") {
       commit("SET_USER_TOKEN", {
         key: data.refresh_token,
-        value: data.access_token,
+        value: data.access_token
       });
       return Promise.resolve();
     } else {
@@ -93,7 +93,7 @@ const actions = {
     if (code === "200") {
       commit("SET_USER_TOKEN", {
         key: data.refresh_token,
-        value: data.access_token,
+        value: data.access_token
       });
       return Promise.resolve();
     } else {
@@ -103,10 +103,10 @@ const actions = {
 
   async logout({ commit }) {
     const params = {
-      accessToken: state.token,
+      accessToken: state.token
     };
     await logout(params);
-    message.success("退出成功", 0.5).then(function () {
+    message.success("退出成功", 0.5).then(function() {
       commit("SET_USER_TOKEN");
       commit("SET_USER_ROUTE");
       commit("SET_USER_INFO");
@@ -121,26 +121,33 @@ const actions = {
         ? state.userInfo
         : JSON.parse(state.userInfo);
     const { data } = await menu({ userId });
-    commit(
-      "SET_USER_ROUTE",
-      generateRoute(data[0].menuPath === null ? initMenu : data)
-    );
+    if (data) {
+      commit(
+        "SET_USER_ROUTE",
+        generateRoute(data[0].menuPath === null ? initMenu : data)
+      );
+    } else {
+      commit("SET_USER_ROUTE", generateRoute(initMenu));
+    }
   },
 
   async addPower({ commit }) {
-    const { userId } = Object.prototype.toString.call(state.userInfo) === '[object Object]' ? state.userInfo : JSON.parse(state.userInfo);
+    const { userId } =
+      Object.prototype.toString.call(state.userInfo) === "[object Object]"
+        ? state.userInfo
+        : JSON.parse(state.userInfo);
     const { data } = await power({ userId });
     commit("SET_USER_POWER", generatePower(data));
   },
   async getUserInfo({ commit }) {
     const { data } = await userInfo();
-    const isAdmin = await getUserType({ userId: data.userId })
-    commit("SET_USER_INFO", {...data, isAdmin: isAdmin.data});
+    const isAdmin = await getUserType({ userId: data.userId });
+    commit("SET_USER_INFO", { ...data, isAdmin: isAdmin.data });
   }
 };
 export default {
   namespaced: true,
   mutations,
   actions,
-  state,
+  state
 };

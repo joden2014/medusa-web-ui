@@ -36,9 +36,12 @@ class Request {
         //   };
         // }
         if (
-          config.method === "post" &&
-          config.headers["Content-Type"] ===
-            "application/x-www-form-urlencoded;charset=UTF-8"
+          (config.method === "put" &&
+            config.headers["Content-Type"] ===
+              "application/x-www-form-urlencoded;charset=UTF-8") ||
+          (config.method === "post" &&
+            config.headers["Content-Type"] ===
+              "application/x-www-form-urlencoded;charset=UTF-8")
         ) {
           config.transformRequest = [
             function(data) {

@@ -14,20 +14,11 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <a-form-item ref="name" label="名称" name="name">
-        <a-input v-model:value="formState.name" />
+      <a-form-item ref="postName" label="名称" name="postName">
+        <a-input v-model:value="formState.postName" />
       </a-form-item>
-      <a-form-item ref="code" label="标识" name="code">
-        <a-input v-model:value="formState.code" />
-      </a-form-item>
-      <a-form-item ref="sort" label="标识" name="sort">
-        <a-input-number v-model:value="formState.sort" />
-      </a-form-item>
-      <a-form-item label="状态" name="enable">
-        <a-switch v-model:checked="formState.enable" />
-      </a-form-item>
-      <a-form-item label="备注" name="remark">
-        <a-textarea v-model:value="formState.remark" />
+      <a-form-item ref="postCode" label="标识" name="postCode">
+        <a-input v-model:value="formState.postCode" placeholder="示例值(P-01)" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -49,12 +40,12 @@ export default defineComponent({
     
     const formState = reactive({
       sort: 0,
-      enable: "true",
+      flag: false,
     });
 
     const formRules = {
-      name: [ { required: true, message: '请输入岗位名称', trigger: 'blur'} ],
-      code: [ { required: true, message: '请输入岗位编号', trigger: 'blur'} ]
+      postName: [ { required: true, message: '请输入岗位名称', trigger: 'blur'} ],
+      postCode: [ { required: true, message: '请输入岗位编号', trigger: 'blur'} ]
     };
 
     const saveKey = "save";

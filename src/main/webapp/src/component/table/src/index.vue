@@ -131,7 +131,7 @@
                     :value="child.code ? item.code : false"
                   >
                     <a-menu-item>
-                      <a @click="child.event(selectedRowKeys)">
+                      <a @click="child.event(selectedRowKeys, record)">
                         {{ child.label }}
                       </a>
                     </a-menu-item>
