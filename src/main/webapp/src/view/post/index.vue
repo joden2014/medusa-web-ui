@@ -84,20 +84,20 @@ export default {
       var response = await page(param);
       return {
         total: response.data.total,
-        data: response.data.record
+        data: response.data
       };
     };
 
     /// 删除配置
-    const removeMethod = record => {
+    const removeMethod = {postId} => {
       modal.confirm({
-        title: "您是否确定要删除此配置?",
+        title: "您是否确定要删除此岗位?",
         icon: createVNode(ExclamationCircleOutlined),
         okText: "确定",
         cancelText: "取消",
         onOk() {
           message.loading({ content: "提交中...", key: removeKey });
-          remove({ id: record.id }).then(response => {
+          remove({ postId }).then(response => {
             if (response.success) {
               message
                 .success({ content: "删除成功", key: removeKey, duration: 1 })
@@ -116,49 +116,12 @@ export default {
       });
     };
 
-    const removeBatchMethod = ids => {
-      modal.confirm({
-        title: "您是否确定要删除选择配置?",
-        icon: createVNode(ExclamationCircleOutlined),
-        okText: "确定",
-        cancelText: "取消",
-        onOk() {
-          message.loading({ content: "提交中...", key: removeBatchKey });
-          removeBatch({ ids: ids }).then(response => {
-            if (response.success) {
-              message
-                .success({
-                  content: "删除成功",
-                  key: removeBatchKey,
-                  duration: 1
-                })
-                .then(() => {
-                  tableRef.value.reload();
-                });
-            } else {
-              message.error({
-                content: "删除失败",
-                key: removeBatchKey,
-                duration: 1
-              });
-            }
-          });
-        }
-      });
-    };
-
     /// 工具栏
     const toolbar = [
       {
         label: "新增",
         event: function() {
           state.visibleSave = true;
-        }
-      },
-      {
-        label: "删除",
-        event: function() {
-          removeBatchMethod(state.selectedRowKeys);
         }
       }
     ];

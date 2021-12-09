@@ -3,10 +3,10 @@ import request from "../request";
 const Api = {
   page: "/api/post/page",
   list: "/api/post/list",
-  remove: "/api/sys/post/remove",
+  remove: "/api/post/delete/",
   removeBatch: "/api/sys/post/removeBatch",
   save: "/api/post/save",
-  edit: "/api/sys/post/edit"
+  edit: "/api/post/update"
 };
 
 /** 岗位列表 */
@@ -44,16 +44,17 @@ export const edit = data => {
   return request.request({
     url: Api.edit,
     data: data,
-    method: "PUT"
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8"
+    }
   });
 };
 
 /** 删除岗位 */
 export const remove = data => {
-  return request.request({
-    url: Api.remove,
-    params: data,
-    method: "DELETE"
+  return request.delete({
+    url: Api.remove + data.postId
   });
 };
 
