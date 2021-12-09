@@ -13,13 +13,13 @@
           <div class="head">Medusa Admin</div>
           <div class="desc">打造通用基础建设，构建数字化技术中台</div>
         </a-form-item>
-        <a-form-item>
+        <a-form-item ref="loginName" name="loginName">
           <a-input
             placeholder="输 入 账 户"
             v-model:value="formState.loginName"
           />
         </a-form-item>
-        <a-form-item>
+        <a-form-item ref="password" name="password">
           <a-input
             placeholder="输 入 密 码"
             type="password"
@@ -31,7 +31,7 @@
           <a class="forgot" href=""> 忘记密码 </a>
         </a-form-item>
         <a-form-item :wrapper-col="{ span: 24 }">
-          <a-button :loading="load" type="primary" @click="onSubmit">
+          <a-button :loading="load" type="primary" @clickr="onSubmit">
             登录
           </a-button>
         </a-form-item>
@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 // import { create } from "@/api/module/captcha";
@@ -56,15 +56,17 @@ export default {
     // 登录参数
     const formState = reactive({
       loginName: "",
-      password: "",
+      password: ""
       // captchaKey: "key",
       // captchaCode: "code",
       // captchaImage: "image",
     });
-
+    onMounted(() => {
+      enterKeyup();
+    });
     const formRules = {
       loginName: [{ required: true, message: "请输入账户", trigger: "blur" }],
-      password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+      password: [{ required: true, message: "请输入密码", trigger: "blur" }]
     };
 
     // 验证码 初始化
@@ -85,23 +87,37 @@ export default {
           load.value = true;
           await store.dispatch("user/login", formState);
           load.value = false;
-          notification['success']({
+          notification["success"]({
             message: "登录成功",
-            description: "欢迎.",
+            description: "欢迎."
           });
           await router.push("/");
         })
-        .catch((error) => {
-          debugger
-          notification['error']({
+        .catch(error => {
+          notification["error"]({
             message: "登录失败",
-            description: error,
+            description: error
           });
           load.value = false;
           // refreshCaptcha();
         });
     };
-
+    const enterKey = event => {
+      const code = event.keyCode
+        ? event.keyCode
+        : event.which
+        ? event.which
+        : event.charCode;
+      if (code == 13) {
+        onSubmit();
+      }
+    };
+    const enterKeyupDestroyed = () => {
+      document.removeEventListener("keyup", enterKey);
+    };
+    const enterKeyup = () => {
+      document.addEventListener("keyup", enterKey);
+    };
     return {
       labelCol: { span: 6 },
       wrapperCol: { span: 24 },
@@ -111,8 +127,11 @@ export default {
       onSubmit,
       formRef,
       load,
+      enterKey,
+      enterKeyupDestroyed,
+      enterKeyup
     };
-  },
+  }
 };
 </script>
 <style lang="less">
