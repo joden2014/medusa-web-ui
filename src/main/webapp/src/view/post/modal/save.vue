@@ -8,7 +8,7 @@
     @cancel="cancel"
   >
     <a-form
-       ref="formRef"
+      ref="formRef"
       :model="formState"
       :rules="formRules"
       :label-col="labelCol"
@@ -18,63 +18,71 @@
         <a-input v-model:value="formState.postName" />
       </a-form-item>
       <a-form-item ref="postCode" label="标识" name="postCode">
-        <a-input v-model:value="formState.postCode" placeholder="示例值(P-01)" />
+        <a-input
+          v-model:value="formState.postCode"
+          placeholder="示例值(P-01)"
+        />
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 <script>
-import { message } from 'ant-design-vue';
+import { message } from "ant-design-vue";
 import { save } from "@/api/module/post";
 import { defineComponent, reactive, ref, toRaw } from "vue";
 export default defineComponent({
   props: {
     visible: {
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
   emit: ["close"],
   setup(props, context) {
-
     const formRef = ref();
-    
+
     const formState = reactive({
       sort: 0,
-      flag: false,
+      flag: false
     });
 
     const formRules = {
-      postName: [ { required: true, message: '请输入岗位名称', trigger: 'blur'} ],
-      postCode: [ { required: true, message: '请输入岗位编号', trigger: 'blur'} ]
+      postName: [
+        { required: true, message: "请输入岗位名称", trigger: "blur" }
+      ],
+      postCode: [{ required: true, message: "请输入岗位编号", trigger: "blur" }]
     };
 
     const saveKey = "save";
 
-    const submit = (e) => {
-      message.loading({ content: '提交中...', key: saveKey });
+    const submit = e => {
+      message.loading({ content: "提交中...", key: saveKey });
       formRef.value
         .validate()
         .then(() => {
-          save(toRaw(formState)).then((response)=>{
-              if(response.success){
-                message.success({ content: '保存成功', key: saveKey, duration: 1 }).then(()=>{
+          save(toRaw(formState)).then(response => {
+            if (response.success) {
+              message
+                .success({ content: "保存成功", key: saveKey, duration: 1 })
+                .then(() => {
+                  cancel(true);
+                });
+            } else {
+              message
+                .success({ content: "保存失败", key: saveKey, duration: 1 })
+                .then(() => {
                   cancel();
                 });
-              }else{
-                message.success({ content: '保存失败', key: saveKey, duration: 1 }).then(()=>{
-                  cancel();
-                });
-              }
+            }
           });
         })
         .catch(error => {
-          console.log('error', error);
+          console.log("error", error);
         });
     };
 
-    const cancel = (e) => {
+    const cancel = (isReload = false) => {
       formRef.value.resetFields();
-      context.emit("close", false);
+      context.emit("close", isReload);
     };
 
     return {
@@ -83,10 +91,10 @@ export default defineComponent({
       formRef,
       formState,
       formRules,
-      
+
       labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
+      wrapperCol: { span: 18 }
     };
-  },
+  }
 });
 </script>
