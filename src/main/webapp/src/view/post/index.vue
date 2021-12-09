@@ -89,7 +89,7 @@ export default {
     };
 
     /// 删除配置
-    const removeMethod = {postId} => {
+    const removeMethod = ({ postId }) => {
       modal.confirm({
         title: "您是否确定要删除此岗位?",
         icon: createVNode(ExclamationCircleOutlined),
